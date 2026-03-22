@@ -1126,8 +1126,8 @@
       </div>
     </div>
 
-    <input type=”search” class=”search” id=”noteSearch” placeholder=”Notlarda ara…” autocomplete=”off” />
-    <ul class=”notes” id=”noteList”></ul>
+    <input type="search" class="search" id="noteSearch" placeholder="Notlarda ara…" autocomplete="off" />
+    <ul class="notes" id="noteList"></ul>
     <p id="noteEmpty" class="empty" hidden>Henüz not yok.</p>
   </div>
     </main>
@@ -1705,59 +1705,59 @@
 
       if (folderNotes.length === 0) return;
 
-      const ul = document.createElement(“ul”);
-      ul.className = “folder-note-list”;
+      const ul = document.createElement("ul");
+      ul.className = "folder-note-list";
 
       for (const n of folderNotes) {
-        const li = document.createElement(“li”);
-        li.className = “folder-note-item” + (selectedNoteId === n.id ? “ selected” : “”);
+        const li = document.createElement("li");
+        li.className = "folder-note-item" + (selectedNoteId === n.id ? " selected" : "");
         li.draggable = true;
         li.dataset.noteId = n.id;
 
-        li.addEventListener(“dragstart”, (e) => {
+        li.addEventListener("dragstart", (e) => {
           dragNoteId = n.id;
-          e.dataTransfer.effectAllowed = “move”;
-          e.dataTransfer.setData(“text/plain”, n.id);
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", n.id);
         });
-        li.addEventListener(“dragend”, () => { dragNoteId = null; });
-        li.addEventListener(“dragover”, (e) => {
+        li.addEventListener("dragend", () => { dragNoteId = null; });
+        li.addEventListener("dragover", (e) => {
           if (!dragNoteId) return;
           e.preventDefault();
-          e.dataTransfer.dropEffect = “move”;
-          li.classList.add(“drag-over”);
+          e.dataTransfer.dropEffect = "move";
+          li.classList.add("drag-over");
         });
-        li.addEventListener(“dragleave”, () => { li.classList.remove(“drag-over”); });
-        li.addEventListener(“drop”, (e) => {
+        li.addEventListener("dragleave", () => { li.classList.remove("drag-over"); });
+        li.addEventListener("drop", (e) => {
           e.preventDefault();
-          li.classList.remove(“drag-over”);
+          li.classList.remove("drag-over");
           if (!dragNoteId || dragNoteId === n.id) return;
           reorderNote(dragNoteId, n.id, folderId);
           dragNoteId = null;
           renderAll();
         });
 
-        const grip = document.createElement(“span”);
-        grip.className = “folder-note-grip”;
-        grip.textContent = “⋮⋮”;
+        const grip = document.createElement("span");
+        grip.className = "folder-note-grip";
+        grip.textContent = "⋮⋮";
 
-        const info = document.createElement(“div”);
-        info.className = “folder-note-info”;
+        const info = document.createElement("div");
+        info.className = "folder-note-info";
 
-        const title = document.createElement(“div”);
-        title.className = “folder-note-title”;
+        const title = document.createElement("div");
+        title.className = "folder-note-title";
         title.textContent = noteListTitle(n);
 
-        const date = document.createElement(“div”);
-        date.className = “folder-note-date”;
+        const date = document.createElement("div");
+        date.className = "folder-note-date";
         date.textContent = formatNoteTime(n.updatedAt);
 
         info.append(title, date);
         li.append(grip, info);
 
-        li.addEventListener(“click”, (e) => {
-          if (e.target.closest(“.folder-note-grip”)) return;
+        li.addEventListener("click", (e) => {
+          if (e.target.closest(".folder-note-grip")) return;
           selectedNoteId = n.id;
-          selectedFolderView = folderId || “none”;
+          selectedFolderView = folderId || "none";
           editingNoteId = n.id;
           renderAll();
         });
@@ -1771,35 +1771,35 @@
       if (countAllEl) countAllEl.textContent = String(notes.length);
       if (countNoneEl) countNoneEl.textContent = String(notes.filter((n) => !n.folderId).length);
       if (!folderList) return;
-      folderList.innerHTML = “”;
+      folderList.innerHTML = "";
       for (const f of folders) {
-        const li = document.createElement(“li”);
-        li.className = “folder-item”;
+        const li = document.createElement("li");
+        li.className = "folder-item";
         const isExpanded = expandedFolders.has(f.id);
-        const row = document.createElement(“button”);
-        row.type = “button”;
-        row.className = “folder-row” + (isExpanded ? “ active” : “”);
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "folder-row" + (isExpanded ? " active" : "");
         row.dataset.folderId = f.id;
 
-        const arrow = document.createElement(“span”);
-        arrow.className = “arrow”;
-        arrow.textContent = “▸”;
+        const arrow = document.createElement("span");
+        arrow.className = "arrow";
+        arrow.textContent = "▸";
 
-        const nm = document.createElement(“span”);
-        nm.className = “folder-name”;
+        const nm = document.createElement("span");
+        nm.className = "folder-name";
         nm.textContent = f.name;
-        nm.style.flex = “1”;
-        nm.style.minWidth = “0”;
-        nm.style.overflow = “hidden”;
-        nm.style.textOverflow = “ellipsis”;
-        nm.style.whiteSpace = “nowrap”;
+        nm.style.flex = "1";
+        nm.style.minWidth = "0";
+        nm.style.overflow = "hidden";
+        nm.style.textOverflow = "ellipsis";
+        nm.style.whiteSpace = "nowrap";
 
-        const fc = document.createElement(“span”);
-        fc.className = “fc”;
+        const fc = document.createElement("span");
+        fc.className = "fc";
         fc.textContent = String(notes.filter((n) => n.folderId === f.id).length);
         row.append(arrow, nm, fc);
 
-        row.addEventListener(“click”, () => {
+        row.addEventListener("click", () => {
           if (expandedFolders.has(f.id)) {
             expandedFolders.delete(f.id);
           } else {
@@ -1809,9 +1809,9 @@
           renderAll();
         });
 
-        row.addEventListener(“dblclick”, (e) => {
+        row.addEventListener("dblclick", (e) => {
           e.preventDefault();
-          const nn = prompt(“Klasör adı”, f.name);
+          const nn = prompt("Klasör adı", f.name);
           if (nn == null) return;
           const t = nn.trim().slice(0, 40);
           if (!t) return;
@@ -1820,20 +1820,20 @@
           renderAll();
         });
 
-        const del = document.createElement(“button”);
-        del.type = “button”;
-        del.className = “folder-del”;
-        del.setAttribute(“aria-label”, “Klasörü sil”);
-        del.textContent = “×”;
-        del.addEventListener(“click”, (e) => {
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "folder-del";
+        del.setAttribute("aria-label", "Klasörü sil");
+        del.textContent = "×";
+        del.addEventListener("click", (e) => {
           e.stopPropagation();
-          if (!confirm(`”${f.name}” silinsin mi? Notlar “Genel”e taşınır.`)) return;
+          if (!confirm(`"${f.name}" silinsin mi? Notlar "Genel"e taşınır.`)) return;
           notes.forEach((n) => {
             if (n.folderId === f.id) n.folderId = null;
           });
           folders = folders.filter((x) => x.id !== f.id);
           expandedFolders.delete(f.id);
-          if (selectedFolderView === f.id) selectedFolderView = “none”;
+          if (selectedFolderView === f.id) selectedFolderView = "none";
           persist();
           renderAll();
         });
@@ -1851,24 +1851,24 @@
         folderList.appendChild(li);
       }
 
-      // “Tümü” ve “Genel” butonlarına active toggle
-      folderNav.querySelectorAll(“[data-folder-view]”).forEach((btn) => {
+      // "Tümü" ve "Genel" butonlarına active toggle
+      folderNav.querySelectorAll("[data-folder-view]").forEach((btn) => {
         const v = btn.dataset.folderView;
-        if (v === “none”) {
-          btn.classList.toggle(“active”, expandedFolders.has(“__none”));
+        if (v === "none") {
+          btn.classList.toggle("active", expandedFolders.has("__none"));
           // Update arrow
-          const ar = btn.querySelector(“.arrow”);
-          if (ar) ar.style.transform = expandedFolders.has(“__none”) ? “rotate(90deg)” : “”;
+          const ar = btn.querySelector(".arrow");
+          if (ar) ar.style.transform = expandedFolders.has("__none") ? "rotate(90deg)" : "";
         } else {
-          btn.classList.toggle(“active”, selectedFolderView === v);
+          btn.classList.toggle("active", selectedFolderView === v);
         }
       });
 
       // Genel klasör altında notları göster
       if (generalFolderWrap) {
-        const oldList = generalFolderWrap.querySelector(“.folder-note-list”);
+        const oldList = generalFolderWrap.querySelector(".folder-note-list");
         if (oldList) oldList.remove();
-        if (expandedFolders.has(“__none”)) {
+        if (expandedFolders.has("__none")) {
           renderFolderNotes(generalFolderWrap, null);
         }
       }

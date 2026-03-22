@@ -5,7 +5,9 @@
       "Bash(where npm:*)",
       "Bash(where npx:*)",
       "Bash(where git:*)",
-      "Bash(where gh:*)"
+      "Bash(where gh:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(cd:*)"
     ]
   }
 }
