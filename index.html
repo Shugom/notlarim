@@ -1279,6 +1279,13 @@
   </details>
 
   <script>
+    window.onerror = function(msg, url, line) {
+      document.title = "HATA L" + line + ": " + msg;
+      var d = document.createElement("div");
+      d.style.cssText = "position:fixed;top:0;left:0;right:0;background:red;color:#fff;padding:8px;z-index:9999;font-size:13px";
+      d.textContent = "JS Hata (satır " + line + "): " + msg;
+      document.body.appendChild(d);
+    };
     const STORAGE_KEY = "notlar-app-v4";
     const LEGACY_TASKS = "gorevlerim-v3";
     const LEGACY_V2 = "gorevlerim-v2";
@@ -1434,7 +1441,7 @@
         notes = [];
         folders = [];
         persist();
-      } catch {
+      } catch(e) {
         notes = [];
         folders = [];
         tasks = [];
@@ -2680,7 +2687,7 @@
           }
           persist();
           renderAll();
-        } catch {
+        } catch(e) {
           alert("Geçersiz dosya.");
         }
         importInput.value = "";

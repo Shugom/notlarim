@@ -1,5 +1,5 @@
 /* Notlarım — Service Worker (PWA). Sürümü değiştirince önbellek yenilenir. */
-const VERSION = "notlarim-pwa-v2";
+const VERSION = "notlarim-pwa-v3";
 const PRECACHE = ["./index.html", "./manifest.json", "./icons/icon-192.png", "./icons/icon-512.png", "./icons/icon.svg"];
 
 self.addEventListener("install", (event) => {
