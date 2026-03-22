@@ -1,0 +1,2493 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#18181b" />
+  <meta name="description" content="Minimal not defteri ve görev hatırlatmaları" />
+  <title>Notlarım</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Notlarım" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #fff;
+      --border: #e4e4e7;
+      --text: #18181b;
+      --muted: #71717a;
+      --accent: #27272a;
+      --accent-fg: #fafafa;
+      --warn: #ca8a04;
+    }
+
+    [data-theme="dark"] {
+      --bg: #09090b;
+      --surface: #18181b;
+      --border: #27272a;
+      --text: #fafafa;
+      --muted: #a1a1aa;
+      --accent: #e4e4e7;
+      --accent-fg: #18181b;
+      --warn: #eab308;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-size: 15px;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.45;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 3rem;
+    }
+
+    .app-shell {
+      display: flex;
+      align-items: stretch;
+      min-height: calc(100vh - 3rem);
+    }
+
+    .sidebar {
+      width: 16rem;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      background: var(--surface);
+      padding: 0.75rem 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .sidebar-head {
+      font-size: 0.65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding: 0 0.35rem 0.25rem;
+    }
+
+    .folder-nav {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      padding: 0.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      flex: 1;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .folder-row {
+      width: 100%;
+      text-align: left;
+      padding: 0.4rem 0.45rem;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text);
+      font: inherit;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.35rem;
+    }
+
+    .folder-row:hover {
+      background: var(--border);
+    }
+
+    .folder-row.active {
+      background: var(--border);
+      font-weight: 600;
+    }
+
+    .folder-row .fc {
+      font-size: 0.68rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .folder-sep {
+      font-size: 0.65rem;
+      color: var(--muted);
+      padding: 0.35rem 0.35rem 0.15rem;
+      border-top: 1px solid var(--border);
+      margin-top: 0.25rem;
+    }
+
+    .sidebar-add {
+      display: flex;
+      gap: 0.25rem;
+      margin-top: auto;
+      padding-top: 0.5rem;
+    }
+
+    .sidebar-add input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.35rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.75rem;
+    }
+
+    .sidebar-add .btn-ghost {
+      padding: 0.35rem 0.45rem;
+      font-size: 0.72rem;
+    }
+
+    .folder-item {
+      display: flex;
+      align-items: center;
+      gap: 0.15rem;
+    }
+
+    .folder-item .folder-row {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .folder-del {
+      flex-shrink: 0;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: none;
+      border-radius: 4px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    .folder-del:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .main-area {
+      flex: 1;
+      min-width: 0;
+    }
+
+    @media (max-width: 640px) {
+      .app-shell {
+        flex-direction: column;
+      }
+
+      .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        max-height: 40vh;
+      }
+
+      .folder-nav {
+        max-height: 10rem;
+      }
+    }
+
+    .wrap {
+      max-width: 34rem;
+      margin: 0 auto;
+      padding: 1.25rem 1rem 2rem;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .top h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+      letter-spacing: -0.02em;
+    }
+
+    .tools {
+      display: flex;
+      gap: 0.25rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .icon-btn {
+      width: 2.25rem;
+      height: 2.25rem;
+      padding: 0;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--muted);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+    }
+
+    .icon-btn:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    .search {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      margin-bottom: 0.75rem;
+    }
+
+    .search:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .note-compose textarea {
+      width: 100%;
+      min-height: 6.5rem;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      resize: vertical;
+      margin-bottom: 0.5rem;
+    }
+
+    .note-compose textarea:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .row {
+      display: flex;
+      gap: 0.35rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      padding: 0.5rem 0.85rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--accent);
+      color: var(--accent-fg);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+      padding: 0.35rem 0.55rem;
+    }
+
+    .btn-ghost:hover {
+      color: var(--text);
+    }
+
+    .notes-hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin: -0.5rem 0 1rem;
+    }
+
+    ul.notes {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li.note {
+      padding: 0.85rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    li.note:last-child {
+      border-bottom: none;
+    }
+
+    li.note.pinned .note-title-line {
+      font-weight: 600;
+    }
+
+    .note-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .note-title-block {
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .note-title-line {
+      font-size: 1rem;
+      font-weight: 600;
+      word-break: break-word;
+      letter-spacing: -0.01em;
+    }
+
+    .note-subline {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    li.note.overdue .note-title-line {
+      color: var(--warn);
+    }
+
+    .note-remind-line {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 0.25rem;
+    }
+
+    details.note-remind {
+      margin-bottom: 0.35rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: transparent;
+    }
+
+    details.note-remind:not([open]) {
+      border-style: dashed;
+      border-color: var(--border);
+    }
+
+    details.note-remind[open] {
+      background: var(--surface);
+      border-style: solid;
+    }
+
+    details.note-remind > summary {
+      padding: 0.28rem 0.4rem;
+      cursor: pointer;
+      font-size: 0.72rem;
+      color: var(--muted);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      user-select: none;
+    }
+
+    details.note-remind > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.note-remind > summary::before {
+      content: "▸";
+      font-size: 0.55rem;
+      opacity: 0.7;
+      width: 0.65rem;
+      flex-shrink: 0;
+    }
+
+    details.note-remind[open] > summary::before {
+      content: "▾";
+    }
+
+    .note-remind-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem;
+      padding: 0 0.4rem 0.45rem 1.05rem;
+    }
+
+    .note-remind-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    .note-remind-grid label {
+      display: block;
+      font-size: 0.58rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.12rem;
+    }
+
+    .note-remind-grid input,
+    .note-remind-grid select {
+      width: 100%;
+      padding: 0.3rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+    }
+
+    .folder-field-label {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .note-folder-select {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.85rem;
+      margin-bottom: 0.45rem;
+      cursor: pointer;
+    }
+
+    .note-folder-select:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .note-compose .note-title-input {
+      width: 100%;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+    }
+
+    .note-compose .note-title-input:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .note-editor .note-title-input {
+      width: 100%;
+      padding: 0.45rem 0.55rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-weight: 600;
+      margin-bottom: 0.45rem;
+    }
+
+    .note-editor .note-title-input:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .note-time {
+      font-size: 0.72rem;
+      color: var(--muted);
+      flex-shrink: 0;
+    }
+
+    .note-actions {
+      display: flex;
+      gap: 0.25rem;
+      margin-top: 0.35rem;
+    }
+
+    .note-actions button {
+      border: none;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.35rem;
+      border-radius: 4px;
+    }
+
+    .note-actions button:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .note-editor {
+      margin-top: 0.5rem;
+    }
+
+    .note-editor textarea {
+      width: 100%;
+      min-height: 8rem;
+      padding: 0.55rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      resize: vertical;
+    }
+
+    .note-editor textarea:focus {
+      outline: none;
+      border-color: var(--text);
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      padding: 2rem 0.5rem;
+    }
+
+    #importInput {
+      display: none;
+    }
+
+    /* —— FAB butonu —— */
+    .fab {
+      position: fixed;
+      z-index: 100;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: var(--accent-fg);
+      font-size: 2rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+    }
+
+    .fab.open {
+      transform: rotate(45deg);
+    }
+
+    /* —— Not modal penceresi —— */
+    .note-modal-overlay {
+      position: fixed;
+      z-index: 90;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .note-modal-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .note-modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      width: min(28rem, calc(100vw - 2rem));
+      max-height: calc(100vh - 4rem);
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+      transform: translateY(1rem);
+      transition: transform 0.2s;
+    }
+
+    .note-modal-overlay.visible .note-modal {
+      transform: translateY(0);
+    }
+
+    .note-modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .note-modal-head h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    .note-modal-close {
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .note-modal-close:hover {
+      color: var(--text);
+      border-color: var(--muted);
+    }
+
+    [data-theme="dark"] .note-modal {
+      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+    }
+
+    /* —— Görev köşesi —— */
+    .tasks-dock {
+      position: fixed;
+      z-index: 50;
+      bottom: 0;
+      right: 0.75rem;
+      left: auto;
+      width: min(22rem, calc(100vw - 6rem));
+      max-height: min(72vh, 520px);
+      margin: 0;
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: 10px 10px 0 0;
+      background: var(--surface);
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+    }
+
+    [data-theme="dark"] .tasks-dock {
+      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
+    }
+
+    .tasks-dock > summary {
+      list-style: none;
+      padding: 0.55rem 0.75rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      user-select: none;
+    }
+
+    .tasks-dock > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .tasks-dock > summary .badge {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.15rem 0.45rem;
+      border-radius: 999px;
+      background: var(--border);
+      color: var(--text);
+    }
+
+    .tasks-dock > summary .badge.warn {
+      background: rgba(234, 179, 8, 0.2);
+      color: var(--warn);
+    }
+
+    .dock-body {
+      max-height: min(60vh, 440px);
+      overflow-y: auto;
+      padding: 0 0.65rem 0.65rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+
+    .dock-body .search {
+      margin-top: 0.5rem;
+      margin-bottom: 0.45rem;
+      font-size: 0.8rem;
+      padding: 0.4rem 0.5rem;
+    }
+
+    .dock-body .row input[type="text"] {
+      flex: 1;
+      min-width: 0;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.85rem;
+    }
+
+    .dock-body .btn {
+      padding: 0.4rem 0.6rem;
+      font-size: 0.8rem;
+    }
+
+    details.add-more {
+      margin-bottom: 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+    }
+
+    details.add-more > summary {
+      padding: 0.35rem 0.5rem;
+      cursor: pointer;
+      font-size: 0.72rem;
+      color: var(--muted);
+      list-style: none;
+    }
+
+    details.add-more > summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.35rem;
+      padding: 0 0.5rem 0.5rem;
+    }
+
+    .grid .full {
+      grid-column: 1 / -1;
+    }
+
+    .grid label {
+      display: block;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.15rem;
+    }
+
+    .grid input,
+    .grid select,
+    .grid textarea {
+      width: 100%;
+      padding: 0.3rem 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.78rem;
+    }
+
+    .grid textarea {
+      min-height: 2.25rem;
+      resize: vertical;
+    }
+
+    .bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      align-items: center;
+      margin-bottom: 0.35rem;
+    }
+
+    .bar select {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.68rem;
+      padding: 0.2rem 0.25rem;
+    }
+
+    .pill {
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
+      padding: 0.15rem 0.4rem;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      cursor: pointer;
+    }
+
+    .pill.on {
+      color: var(--text);
+      border-color: var(--text);
+    }
+
+    ul.tasks {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li.task {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.3rem;
+      padding: 0.45rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    li.task:last-child {
+      border-bottom: none;
+    }
+
+    li.task.overdue:not(.done) .title {
+      color: var(--warn);
+    }
+
+    .grip {
+      cursor: grab;
+      color: var(--muted);
+      font-size: 0.65rem;
+      opacity: 0.45;
+      user-select: none;
+      padding-top: 0.1rem;
+    }
+
+    .grip.inactive {
+      cursor: default;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+
+    li.task label.main {
+      flex: 1;
+      display: flex;
+      gap: 0.35rem;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    li.task input[type="checkbox"] {
+      margin-top: 0.15rem;
+      accent-color: var(--text);
+      flex-shrink: 0;
+    }
+
+    .body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .title {
+      font-weight: 500;
+      word-break: break-word;
+      font-size: 0.82rem;
+    }
+
+    li.done .title {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.2rem;
+      margin-top: 0.15rem;
+    }
+
+    .badge {
+      font-size: 0.58rem;
+      padding: 0.05rem 0.25rem;
+      border-radius: 2px;
+      background: var(--border);
+      color: var(--muted);
+    }
+
+    .badge.p1 {
+      color: #b91c1c;
+      background: rgba(185, 28, 28, 0.12);
+    }
+
+    .meta {
+      font-size: 0.65rem;
+      color: var(--muted);
+      margin-top: 0.15rem;
+    }
+
+    .meta span + span::before {
+      content: " · ";
+    }
+
+    .note-preview.tiny {
+      font-size: 0.68rem;
+      margin-top: 0.15rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .acts {
+      display: flex;
+      flex-direction: column;
+      gap: 0.05rem;
+      flex-shrink: 0;
+    }
+
+    .acts button {
+      border: none;
+      background: none;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0.05rem 0.2rem;
+      font-size: 0.72rem;
+      border-radius: 3px;
+    }
+
+    .acts button:hover {
+      color: var(--text);
+      background: var(--border);
+    }
+
+    .panel {
+      margin-top: 0.35rem;
+      padding: 0.4rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+    }
+
+    .panel .grid {
+      padding: 0;
+    }
+
+    .foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.4rem;
+      padding-top: 0.4rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.68rem;
+      color: var(--muted);
+    }
+
+    [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
+    [data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.75);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Klasörler">
+      <div class="sidebar-head">Klasörler</div>
+      <nav class="folder-nav" id="folderNav">
+        <button type="button" class="folder-row" data-folder-view="all">Tümü <span class="fc" id="countAll"></span></button>
+        <ul id="folderList" style="list-style:none;margin:0;padding:0"></ul>
+        <div class="folder-sep">Klasörsüz</div>
+        <button type="button" class="folder-row" data-folder-view="none">Genel <span class="fc" id="countNone"></span></button>
+      </nav>
+      <div class="sidebar-add">
+        <input type="text" id="newFolderName" placeholder="Yeni klasör" maxlength="40" />
+        <button type="button" class="btn-ghost" id="addFolderBtn">Ekle</button>
+      </div>
+    </aside>
+    <main class="main-area">
+  <div class="wrap">
+    <div class="top">
+      <h1>Notlarım</h1>
+      <div class="tools">
+        <button type="button" class="icon-btn" id="themeBtn" title="Tema">◐</button>
+        <button type="button" class="icon-btn" id="notifBtn" title="Bildirim">🔔</button>
+        <button type="button" class="icon-btn" id="exportBtn" title="Dışa aktar">↓</button>
+        <button type="button" class="icon-btn" id="importBtn" title="İçe aktar">↑</button>
+        <input type="file" id="importInput" accept="application/json,.json" />
+      </div>
+    </div>
+
+    <input type=”search” class=”search” id=”noteSearch” placeholder=”Notlarda ara…” autocomplete=”off” />
+    <ul class=”notes” id=”noteList”></ul>
+    <p id="noteEmpty" class="empty" hidden>Henüz not yok.</p>
+  </div>
+    </main>
+  </div>
+
+  <!-- Not ekleme modal penceresi -->
+  <div class="note-modal-overlay" id="noteModalOverlay">
+    <div class="note-modal">
+      <div class="note-modal-head">
+        <h2>Yeni Not</h2>
+        <button type="button" class="note-modal-close" id="noteModalClose">&times;</button>
+      </div>
+      <form class="note-compose" id="noteForm">
+        <label class="folder-field-label" for="noteFolderSelect">Klasör</label>
+        <select id="noteFolderSelect" class="note-folder-select" title="Boş bırakırsanız not klasörsüz (Genel) olur">
+          <option value="">— Klasörsüz (Genel) —</option>
+        </select>
+        <input type="text" class="note-title-input" id="noteTitle" placeholder="Başlık" maxlength="200" autocomplete="off" />
+        <textarea id="noteBody" placeholder="Not metni…" maxlength="50000"></textarea>
+        <details class="note-remind" id="noteRemindDetails">
+          <summary>Hatırlatma</summary>
+          <div class="note-remind-grid">
+            <div>
+              <label for="noteDueDate">Gün</label>
+              <input type="date" id="noteDueDate" />
+            </div>
+            <div>
+              <label for="noteDueTime">Saat</label>
+              <input type="time" id="noteDueTime" />
+            </div>
+            <div class="full">
+              <label for="noteReminderOffset">Uyarı</label>
+              <select id="noteReminderOffset">
+                <option value="">Kapalı</option>
+                <option value="0">Tam vakitte</option>
+                <option value="15">15 dk önce</option>
+                <option value="60">1 saat önce</option>
+                <option value="1440">1 gün önce</option>
+              </select>
+            </div>
+          </div>
+        </details>
+        <div class="row" style="margin-bottom:0">
+          <button type="submit" class="btn">Notu kaydet</button>
+          <button type="button" class="btn-ghost" id="noteModalCancelBtn">Vazgeç</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- FAB butonu -->
+  <button type="button" class="fab" id="fabBtn" title="Yeni not ekle">+</button>
+
+  <details class="tasks-dock" id="tasksDock">
+    <summary>
+      <span>Görevler &amp; hatırlatmalar</span>
+      <span class="badge" id="dockBadge">0</span>
+    </summary>
+    <div class="dock-body">
+      <input type="search" class="search" id="taskSearch" placeholder="Görevde ara…" autocomplete="off" />
+
+      <form id="taskForm">
+        <div class="row">
+          <input type="text" id="taskInput" placeholder="Yeni görev" maxlength="200" />
+          <button type="submit" class="btn">Ekle</button>
+        </div>
+        <details class="add-more">
+          <summary>Tarih, hatırlatma, kategori…</summary>
+          <div class="grid">
+            <div>
+              <label for="dueDate">Gün</label>
+              <input type="date" id="dueDate" />
+            </div>
+            <div>
+              <label for="dueTime">Saat</label>
+              <input type="time" id="dueTime" />
+            </div>
+            <div class="full">
+              <label for="reminderOffset">Hatırlatma</label>
+              <select id="reminderOffset">
+                <option value="">Yok</option>
+                <option value="0">Tam vakitte</option>
+                <option value="15">15 dk önce</option>
+                <option value="60">1 saat önce</option>
+                <option value="1440">1 gün önce</option>
+              </select>
+            </div>
+            <div>
+              <label for="category">Kategori</label>
+              <select id="category">
+                <option value="">Genel</option>
+                <option value="is">İş</option>
+                <option value="kisisel">Kişisel</option>
+                <option value="saglik">Sağlık</option>
+              </select>
+            </div>
+            <div>
+              <label for="priority">Öncelik</label>
+              <select id="priority">
+                <option value="1">Yüksek</option>
+                <option value="2" selected>Orta</option>
+                <option value="3">Düşük</option>
+              </select>
+            </div>
+            <div class="full">
+              <label for="repeat">Tekrar</label>
+              <select id="repeat">
+                <option value="">Yok</option>
+                <option value="daily">Her gün</option>
+                <option value="weekly">Her hafta</option>
+                <option value="monthly">Her ay</option>
+              </select>
+            </div>
+            <div class="full">
+              <label for="taskNotes">Göreve not</label>
+              <textarea id="taskNotes" maxlength="2000" placeholder="İsteğe bağlı"></textarea>
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <div class="bar">
+        <button type="button" class="pill on" data-filter="all">Tümü</button>
+        <button type="button" class="pill" data-filter="active">Aktif</button>
+        <button type="button" class="pill" data-filter="done">Biten</button>
+        <span style="flex:1"></span>
+        <select id="catFilter" title="Kategori">
+          <option value="">Kat.</option>
+          <option value="is">İş</option>
+          <option value="kisisel">Kiş.</option>
+          <option value="saglik">Sağ.</option>
+          <option value="__other">Genel</option>
+        </select>
+        <select id="sortBy" title="Sıra">
+          <option value="due">Tarih</option>
+          <option value="priority">Öncelik</option>
+          <option value="custom">Sürükle</option>
+        </select>
+      </div>
+
+      <ul class="tasks" id="taskList"></ul>
+      <p id="taskEmpty" class="empty" hidden>Görev yok.</p>
+
+      <div class="foot">
+        <span id="taskCount"></span>
+        <button type="button" class="btn-ghost" id="clearDone">Bitenleri sil</button>
+      </div>
+    </div>
+  </details>
+
+  <script>
+    const STORAGE_KEY = "notlar-app-v4";
+    const LEGACY_TASKS = "gorevlerim-v3";
+    const LEGACY_V2 = "gorevlerim-v2";
+    const LEGACY_V1 = "gorevlerim-v1";
+    const THEME_KEY = "gorevlerim-theme";
+
+    const CAT_LABEL = { "": "Genel", is: "İş", kisisel: "Kişisel", saglik: "Sağlık" };
+    const REMINDER_LABELS = { 0: "Tam vakitte", 15: "15 dk önce", 60: "1 saat önce", 1440: "1 gün önce" };
+    const REPEAT_LABELS = { daily: "Günlük", weekly: "Haftalık", monthly: "Aylık" };
+
+    const $ = (id) => document.getElementById(id);
+
+    let notes = [];
+    let folders = [];
+    let selectedFolderView = "all";
+    let tasks = [];
+    let taskFilter = "all";
+    let editingTaskId = null;
+    let editingNoteId = null;
+    let dragId = null;
+
+    const noteForm = $("noteForm");
+    const noteTitleInput = $("noteTitle");
+    const noteBody = $("noteBody");
+    const noteDueDateEl = $("noteDueDate");
+    const noteDueTimeEl = $("noteDueTime");
+    const noteReminderOffsetEl = $("noteReminderOffset");
+    const noteRemindDetails = $("noteRemindDetails");
+    const noteFolderSelect = $("noteFolderSelect");
+    const noteList = $("noteList");
+    const noteEmpty = $("noteEmpty");
+    const folderList = $("folderList");
+    const folderNav = $("folderNav");
+    const newFolderName = $("newFolderName");
+    const addFolderBtn = $("addFolderBtn");
+    const countAllEl = $("countAll");
+    const countNoneEl = $("countNone");
+
+    const taskForm = $("taskForm");
+    const taskInput = $("taskInput");
+    const dueDateEl = $("dueDate");
+    const dueTimeEl = $("dueTime");
+    const reminderOffsetEl = $("reminderOffset");
+    const categoryEl = $("category");
+    const priorityEl = $("priority");
+    const repeatEl = $("repeat");
+    const taskNotesEl = $("taskNotes");
+    const taskSearch = $("taskSearch");
+    const taskList = $("taskList");
+    const taskEmpty = $("taskEmpty");
+    const taskCount = $("taskCount");
+    const clearDone = $("clearDone");
+    const filterPills = document.querySelectorAll("[data-filter]");
+    const catFilter = $("catFilter");
+    const sortByEl = $("sortBy");
+    const themeBtn = $("themeBtn");
+    const notifBtn = $("notifBtn");
+    const exportBtn = $("exportBtn");
+    const importBtn = $("importBtn");
+    const importInput = $("importInput");
+    const dockBadge = $("dockBadge");
+    const tasksDock = $("tasksDock");
+    const noteModalOverlay = $("noteModalOverlay");
+    const noteModalClose = $("noteModalClose");
+    const noteModalCancelBtn = $("noteModalCancelBtn");
+    const fabBtn = $("fabBtn");
+    const noteSearchEl = $("noteSearch");
+
+    function openNoteModal() {
+      noteModalOverlay.classList.add("visible");
+      fabBtn.classList.add("open");
+      setTimeout(() => noteTitleInput.focus(), 100);
+    }
+
+    function closeNoteModal() {
+      noteModalOverlay.classList.remove("visible");
+      fabBtn.classList.remove("open");
+    }
+
+    function normalizeFolder(f) {
+      return {
+        id: f.id,
+        name: String(f.name || "").trim().slice(0, 40) || "Klasör",
+      };
+    }
+
+    function normalizeNote(n) {
+      const ro = n.reminderOffset;
+      let rOff = ro === undefined || ro === null || ro === "" ? null : Number(ro);
+      if (rOff !== null && Number.isNaN(rOff)) rOff = null;
+      let folderId = n.folderId || null;
+      if (folderId && !folders.some((x) => x.id === folderId)) folderId = null;
+      return {
+        id: n.id,
+        title: String(n.title || "").trim().slice(0, 200),
+        body: String(n.body || "").slice(0, 50000),
+        updatedAt: typeof n.updatedAt === "number" ? n.updatedAt : Date.now(),
+        pinned: !!n.pinned,
+        folderId,
+        dueDate: n.dueDate || null,
+        dueTime: n.dueTime || null,
+        reminderOffset: rOff,
+        reminderFiredFor: n.reminderFiredFor ?? null,
+        snoozeUntil: n.snoozeUntil != null ? Number(n.snoozeUntil) : null,
+      };
+    }
+
+    function normalizeTask(t) {
+      const pr = Number(t.priority);
+      return {
+        id: t.id,
+        text: String(t.text || ""),
+        done: !!t.done,
+        dueDate: t.dueDate || null,
+        dueTime: t.dueTime || null,
+        reminderOffset:
+          t.reminderOffset === undefined || t.reminderOffset === null || t.reminderOffset === ""
+            ? null
+            : Number(t.reminderOffset),
+        reminderFiredFor: t.reminderFiredFor ?? null,
+        category: t.category || "",
+        priority: pr >= 1 && pr <= 3 ? pr : 2,
+        notes: String(t.notes || "").slice(0, 2000),
+        repeat: t.repeat && ["daily", "weekly", "monthly"].includes(t.repeat) ? t.repeat : null,
+        snoozeUntil: t.snoozeUntil != null ? Number(t.snoozeUntil) : null,
+      };
+    }
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const d = JSON.parse(raw);
+          if (d && Array.isArray(d.notes) && Array.isArray(d.tasks)) {
+            folders = Array.isArray(d.folders) ? d.folders.map(normalizeFolder) : [];
+            notes = d.notes.map(normalizeNote);
+            tasks = d.tasks.map(normalizeTask);
+            persist();
+            return;
+          }
+        }
+        let legacy = localStorage.getItem(LEGACY_TASKS) || localStorage.getItem(LEGACY_V2) || localStorage.getItem(LEGACY_V1);
+        if (legacy) {
+          const arr = JSON.parse(legacy);
+          tasks = Array.isArray(arr) ? arr.map(normalizeTask) : [];
+        } else {
+          tasks = [];
+        }
+        notes = [];
+        folders = [];
+        persist();
+      } catch {
+        notes = [];
+        folders = [];
+        tasks = [];
+      }
+    }
+
+    function persist() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ notes, tasks, folders }));
+      [LEGACY_TASKS, LEGACY_V2, LEGACY_V1].forEach((k) => localStorage.removeItem(k));
+    }
+
+    function uid() {
+      return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random();
+    }
+
+    function todayISO() {
+      const d = new Date();
+      const z = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())}`;
+    }
+
+    function nextDueDate(iso, mode) {
+      let y;
+      let m;
+      let d;
+      if (iso && /^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+        const p = iso.split("-").map(Number);
+        y = p[0];
+        m = p[1] - 1;
+        d = p[2];
+      } else {
+        const n = new Date();
+        y = n.getFullYear();
+        m = n.getMonth();
+        d = n.getDate();
+      }
+      const dt = new Date(y, m, d);
+      if (mode === "daily") dt.setDate(dt.getDate() + 1);
+      if (mode === "weekly") dt.setDate(dt.getDate() + 7);
+      if (mode === "monthly") dt.setMonth(dt.getMonth() + 1);
+      const z = (n) => String(n).padStart(2, "0");
+      return `${dt.getFullYear()}-${z(dt.getMonth() + 1)}-${z(dt.getDate())}`;
+    }
+
+    function getDueMs(t) {
+      if (!t.dueDate) return null;
+      const time = t.dueTime && t.dueTime.length ? t.dueTime : "09:00";
+      const ms = new Date(`${t.dueDate}T${time}:00`).getTime();
+      return Number.isNaN(ms) ? null : ms;
+    }
+
+    function getReminderFireMs(t) {
+      if (t.reminderOffset === null || t.dueDate == null) return null;
+      const due = getDueMs(t);
+      if (due === null) return null;
+      const off = Number(t.reminderOffset);
+      if (Number.isNaN(off)) return null;
+      return due - off * 60 * 1000;
+    }
+
+    function formatDateTr(iso) {
+      if (!iso) return "";
+      const [y, mo, d] = iso.split("-").map(Number);
+      return new Date(y, mo - 1, d).toLocaleDateString("tr-TR", {
+        day: "numeric",
+        month: "short",
+      });
+    }
+
+    function formatNoteTime(ts) {
+      return new Date(ts).toLocaleString("tr-TR", {
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    }
+
+    function isOverdue(t) {
+      if (t.done || !t.dueDate) return false;
+      const due = getDueMs(t);
+      return due !== null && Date.now() > due;
+    }
+
+    function isNoteOverdue(n) {
+      if (!n.dueDate) return false;
+      const due = getDueMs(n);
+      return due !== null && Date.now() > due;
+    }
+
+    function notePreview(body) {
+      const line = body.trim().split("\n")[0] || "Başlıksız";
+      return line.length > 120 ? line.slice(0, 120) + "…" : line;
+    }
+
+    function noteListTitle(n) {
+      return n.title.trim() || notePreview(n.body);
+    }
+
+    function noteListSubtitle(n) {
+      if (!n.title.trim()) return "";
+      const line = n.body.trim().replace(/\s+/g, " ");
+      if (!line) return "";
+      return line.length > 100 ? line.slice(0, 100) + "…" : line;
+    }
+
+    function describeNoteReminder(n) {
+      if (n.reminderOffset === null || !n.dueDate) return [];
+      const parts = [
+        formatDateTr(n.dueDate),
+        n.dueTime || "09:00",
+        REMINDER_LABELS[n.reminderOffset] || "",
+      ].filter(Boolean);
+      if (n.snoozeUntil && Date.now() < n.snoozeUntil) {
+        parts.push(
+          `ertelendi ${new Date(n.snoozeUntil).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`
+        );
+      }
+      return parts;
+    }
+
+    function matchesTaskSearch(t, q) {
+      if (!q) return true;
+      const s = q.toLowerCase();
+      return t.text.toLowerCase().includes(s) || (t.notes && t.notes.toLowerCase().includes(s));
+    }
+
+    function matchesCat(t) {
+      const cf = catFilter.value;
+      if (!cf) return true;
+      if (cf === "__other") return !t.category;
+      return t.category === cf;
+    }
+
+    function baseFilteredTasks() {
+      let v = tasks.filter(matchesCat).filter((t) => matchesTaskSearch(t, taskSearch.value.trim()));
+      if (taskFilter === "active") v = v.filter((t) => !t.done);
+      if (taskFilter === "done") v = v.filter((t) => t.done);
+      return v;
+    }
+
+    function sortTasks(arr) {
+      const mode = sortByEl.value;
+      const ix = (id) => tasks.findIndex((x) => x.id === id);
+      if (mode === "custom") {
+        return [...arr].sort((a, b) => ix(a.id) - ix(b.id));
+      }
+      if (mode === "priority") {
+        return [...arr].sort((a, b) => {
+          if (a.priority !== b.priority) return a.priority - b.priority;
+          const da = getDueMs(a);
+          const db = getDueMs(b);
+          if (da === null && db === null) return ix(a.id) - ix(b.id);
+          if (da === null) return 1;
+          if (db === null) return -1;
+          return da - db;
+        });
+      }
+      return [...arr].sort((a, b) => {
+        const da = getDueMs(a);
+        const db = getDueMs(b);
+        if (da === null && db === null) return ix(a.id) - ix(b.id);
+        if (da === null) return 1;
+        if (db === null) return -1;
+        if (da !== db) return da - db;
+        if (a.priority !== b.priority) return a.priority - b.priority;
+        return ix(a.id) - ix(b.id);
+      });
+    }
+
+    function visibleTasks() {
+      return sortTasks(baseFilteredTasks());
+    }
+
+    function reorderFromDrag(dragId, targetId) {
+      const vis = visibleTasks();
+      const ids = vis.map((t) => t.id);
+      const fi = ids.indexOf(dragId);
+      const ti = ids.indexOf(targetId);
+      if (fi < 0 || ti < 0 || fi === ti) return;
+      const next = [...ids];
+      next.splice(fi, 1);
+      next.splice(ti, 0, dragId);
+      const visSet = new Set(next);
+      const firstIdx = tasks.findIndex((t) => visSet.has(t.id));
+      if (firstIdx < 0) return;
+      const map = Object.fromEntries(tasks.map((t) => [t.id, t]));
+      const before = tasks.filter((t, i) => i < firstIdx && !visSet.has(t.id));
+      const after = tasks.filter((t, i) => i >= firstIdx && !visSet.has(t.id));
+      tasks = [...before, ...next.map((id) => map[id]), ...after];
+      sortByEl.value = "custom";
+      persist();
+    }
+
+    function sortedNotesFiltered() {
+      const q = noteSearchEl ? noteSearchEl.value.trim().toLowerCase() : "";
+      const list = notes.filter((n) => {
+        if (selectedFolderView === "all") { /* pass */ }
+        else if (selectedFolderView === "none") { if (n.folderId) return false; }
+        else { if (n.folderId !== selectedFolderView) return false; }
+        if (q) {
+          const t = (n.title + " " + n.body).toLowerCase();
+          if (!t.includes(q)) return false;
+        }
+        return true;
+      });
+      return list.sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        return b.updatedAt - a.updatedAt;
+      });
+    }
+
+    function refreshNoteFolderSelect() {
+      if (!noteFolderSelect) return;
+      const cur = noteFolderSelect.value;
+      noteFolderSelect.innerHTML = "";
+      const opt0 = document.createElement("option");
+      opt0.value = "";
+      opt0.textContent = "— Klasörsüz (Genel) —";
+      noteFolderSelect.appendChild(opt0);
+      for (const f of folders) {
+        const o = document.createElement("option");
+        o.value = f.id;
+        o.textContent = f.name;
+        noteFolderSelect.appendChild(o);
+      }
+      if ([...noteFolderSelect.options].some((o) => o.value === cur)) noteFolderSelect.value = cur;
+    }
+
+    function renderSidebar() {
+      if (countAllEl) countAllEl.textContent = String(notes.length);
+      if (countNoneEl) countNoneEl.textContent = String(notes.filter((n) => !n.folderId).length);
+      if (!folderList) return;
+      folderList.innerHTML = "";
+      for (const f of folders) {
+        const li = document.createElement("li");
+        li.className = "folder-item";
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "folder-row";
+        row.dataset.folderId = f.id;
+        const nm = document.createElement("span");
+        nm.className = "folder-name";
+        nm.textContent = f.name;
+        const fc = document.createElement("span");
+        fc.className = "fc";
+        fc.textContent = String(notes.filter((n) => n.folderId === f.id).length);
+        row.append(nm, fc);
+        row.addEventListener("click", () => {
+          selectedFolderView = f.id;
+          renderAll();
+        });
+        row.addEventListener("dblclick", (e) => {
+          e.preventDefault();
+          const nn = prompt("Klasör adı", f.name);
+          if (nn == null) return;
+          const t = nn.trim().slice(0, 40);
+          if (!t) return;
+          f.name = t;
+          persist();
+          renderAll();
+        });
+        const del = document.createElement("button");
+        del.type = "button";
+        del.className = "folder-del";
+        del.setAttribute("aria-label", "Klasörü sil");
+        del.textContent = "×";
+        del.addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!confirm(`“${f.name}” silinsin mi? Notlar “Genel”e taşınır.`)) return;
+          notes.forEach((n) => {
+            if (n.folderId === f.id) n.folderId = null;
+          });
+          folders = folders.filter((x) => x.id !== f.id);
+          if (selectedFolderView === f.id) selectedFolderView = "none";
+          persist();
+          renderAll();
+        });
+        li.append(row, del);
+        folderList.appendChild(li);
+      }
+      folderNav.querySelectorAll("[data-folder-view]").forEach((btn) => {
+        const v = btn.dataset.folderView;
+        btn.classList.toggle("active", selectedFolderView === v);
+      });
+      folderList.querySelectorAll("button.folder-row[data-folder-id]").forEach((btn) => {
+        btn.classList.toggle("active", selectedFolderView === btn.dataset.folderId);
+      });
+      refreshNoteFolderSelect();
+    }
+
+    function updateThemeMeta() {
+      const dark = document.documentElement.getAttribute("data-theme") === "dark";
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#09090b" : "#f4f4f5");
+    }
+
+    function applyTheme() {
+      const t = localStorage.getItem(THEME_KEY);
+      const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const dark = t === "dark" || (!t && prefersDark);
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+      updateThemeMeta();
+    }
+
+    function updateTitle() {
+      const od =
+        tasks.filter((t) => !t.done && isOverdue(t)).length +
+        notes.filter(isNoteOverdue).length;
+      const active = tasks.filter((t) => !t.done).length;
+      if (od) document.title = `(${od}) Notlarım`;
+      else if (active) document.title = `${active} görev · Notlarım`;
+      else document.title = "Notlarım";
+    }
+
+    function updateDockBadge() {
+      const active = tasks.filter((t) => !t.done).length;
+      const od = tasks.filter((t) => !t.done && isOverdue(t)).length;
+      dockBadge.textContent = String(active);
+      dockBadge.classList.toggle("warn", od > 0);
+    }
+
+    function playBeep() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = ctx.createOscillator();
+        const g = ctx.createGain();
+        o.connect(g);
+        g.connect(ctx.destination);
+        o.frequency.value = 880;
+        g.gain.value = 0.04;
+        o.start();
+        setTimeout(() => {
+          o.stop();
+          ctx.close();
+        }, 120);
+      } catch (_) {}
+    }
+
+    function updateNotifBtn() {
+      if (!("Notification" in window)) {
+        notifBtn.hidden = true;
+        return;
+      }
+      notifBtn.hidden = false;
+      if (Notification.permission === "granted") notifBtn.textContent = "✓";
+      else if (Notification.permission === "denied") notifBtn.textContent = "✕";
+      else notifBtn.textContent = "🔔";
+      notifBtn.title =
+        Notification.permission === "granted"
+          ? "Bildirimler açık"
+          : Notification.permission === "denied"
+            ? "Bildirim engelli"
+            : "Bildirime izin ver";
+    }
+
+    function fireReminder(item, fireMs, notifTitle, notifBody, tagPrefix) {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      if (item.snoozeUntil && Date.now() < item.snoozeUntil) return;
+      const key = String(fireMs);
+      if (item.reminderFiredFor === key) return;
+      new Notification(notifTitle, {
+        body: notifBody,
+        tag: tagPrefix + item.id,
+      });
+      playBeep();
+      item.reminderFiredFor = key;
+      persist();
+    }
+
+    function tryNotify(t, fireMs) {
+      if (t.done) return;
+      const when = t.dueDate ? formatDateTr(t.dueDate) : "";
+      const timeBit = t.dueTime ? ` ${t.dueTime}` : "";
+      fireReminder(
+        t,
+        fireMs,
+        "Hatırlatma",
+        `${t.text}${when ? ` — ${when}${timeBit}` : ""}`,
+        "task-"
+      );
+    }
+
+    function tryNotifyNote(n, fireMs) {
+      const when = n.dueDate ? formatDateTr(n.dueDate) : "";
+      const timeBit = n.dueTime ? ` ${n.dueTime}` : "";
+      const line = noteListTitle(n);
+      fireReminder(
+        n,
+        fireMs,
+        "Not hatırlatması",
+        `${line}${when ? ` — ${when}${timeBit}` : ""}`,
+        "note-"
+      );
+    }
+
+    function checkReminders() {
+      const now = Date.now();
+      for (const t of tasks) {
+        if (t.done) continue;
+        const fire = getReminderFireMs(t);
+        if (fire === null) continue;
+        if (t.snoozeUntil && now < t.snoozeUntil) continue;
+        if (now >= fire) tryNotify(t, fire);
+      }
+      for (const n of notes) {
+        const fire = getReminderFireMs(n);
+        if (fire === null) continue;
+        if (n.snoozeUntil && now < n.snoozeUntil) continue;
+        if (now >= fire) tryNotifyNote(n, fire);
+      }
+    }
+
+    function describeMeta(t) {
+      const parts = [];
+      if (t.dueDate) {
+        parts.push(formatDateTr(t.dueDate));
+        parts.push(t.dueTime || "09:00");
+      }
+      if (t.reminderOffset !== null && t.dueDate) {
+        parts.push(REMINDER_LABELS[t.reminderOffset] || "");
+      }
+      if (t.repeat) parts.push(REPEAT_LABELS[t.repeat] || "");
+      if (t.snoozeUntil && Date.now() < t.snoozeUntil) {
+        parts.push(`ertelendi ${new Date(t.snoozeUntil).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })}`);
+      }
+      return parts.filter(Boolean);
+    }
+
+    function escapeAttr(s) {
+      return String(s)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;");
+    }
+
+    function renderNotes() {
+      noteList.innerHTML = "";
+      noteEmpty.hidden = true;
+      updateTitle();
+      if (notes.length === 0) {
+        noteEmpty.hidden = false;
+        noteEmpty.textContent = "Henüz not yok.";
+        return;
+      }
+      const arr = sortedNotesFiltered();
+      if (arr.length === 0) {
+        const li0 = document.createElement("li");
+        li0.className = "empty";
+        li0.textContent = "Bu klasörde not yok.";
+        noteList.appendChild(li0);
+        return;
+      }
+
+      for (const n of arr) {
+        const li = document.createElement("li");
+        li.className =
+          "note" +
+          (n.pinned ? " pinned" : "") +
+          (isNoteOverdue(n) ? " overdue" : "");
+
+        const head = document.createElement("div");
+        head.className = "note-head";
+        const block = document.createElement("div");
+        block.className = "note-title-block";
+        const titleLine = document.createElement("div");
+        titleLine.className = "note-title-line";
+        titleLine.textContent = noteListTitle(n);
+        block.appendChild(titleLine);
+        const sub = noteListSubtitle(n);
+        if (sub) {
+          const subEl = document.createElement("div");
+          subEl.className = "note-subline";
+          subEl.textContent = sub;
+          block.appendChild(subEl);
+        }
+        const rParts = describeNoteReminder(n);
+        if (rParts.length) {
+          const rl = document.createElement("div");
+          rl.className = "note-remind-line";
+          rl.textContent = "🔔 " + rParts.join(" · ");
+          block.appendChild(rl);
+        }
+        block.addEventListener("click", () => {
+          editingNoteId = editingNoteId === n.id ? null : n.id;
+          renderNotes();
+        });
+        const time = document.createElement("span");
+        time.className = "note-time";
+        time.textContent = formatNoteTime(n.updatedAt);
+        head.append(block, time);
+        li.appendChild(head);
+
+        const actions = document.createElement("div");
+        actions.className = "note-actions";
+        const pinBtn = document.createElement("button");
+        pinBtn.type = "button";
+        pinBtn.textContent = n.pinned ? "Sabitle kaldır" : "Sabitle";
+        pinBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          n.pinned = !n.pinned;
+          n.updatedAt = Date.now();
+          persist();
+          renderNotes();
+        });
+        if (getReminderFireMs(n) !== null) {
+          const sn15 = document.createElement("button");
+          sn15.type = "button";
+          sn15.textContent = "15′";
+          sn15.title = "15 dk ertele";
+          sn15.addEventListener("click", (e) => {
+            e.stopPropagation();
+            n.snoozeUntil = Date.now() + 15 * 60 * 1000;
+            n.reminderFiredFor = null;
+            persist();
+            renderAll();
+          });
+          const sn60 = document.createElement("button");
+          sn60.type = "button";
+          sn60.textContent = "1s";
+          sn60.title = "1 saat ertele";
+          sn60.addEventListener("click", (e) => {
+            e.stopPropagation();
+            n.snoozeUntil = Date.now() + 60 * 60 * 1000;
+            n.reminderFiredFor = null;
+            persist();
+            renderAll();
+          });
+          actions.append(sn15, sn60);
+        }
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.textContent = "Sil";
+        delBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          notes = notes.filter((x) => x.id !== n.id);
+          if (editingNoteId === n.id) editingNoteId = null;
+          persist();
+          renderAll();
+        });
+        actions.append(pinBtn, delBtn);
+        li.appendChild(actions);
+
+        if (editingNoteId === n.id) {
+          const ed = document.createElement("div");
+          ed.className = "note-editor";
+          const titleIn = document.createElement("input");
+          titleIn.type = "text";
+          titleIn.className = "note-title-input";
+          titleIn.maxLength = 200;
+          titleIn.placeholder = "Başlık";
+          titleIn.value = n.title.trim() || (n.body.trim() ? notePreview(n.body) : "");
+          const labF = document.createElement("label");
+          labF.className = "folder-field-label";
+          labF.textContent = "Klasör";
+          labF.setAttribute("for", "en-folder-" + n.id);
+          const selF = document.createElement("select");
+          selF.className = "note-folder-select";
+          selF.id = "en-folder-" + n.id;
+          const oz = document.createElement("option");
+          oz.value = "";
+          oz.textContent = "— Klasörsüz (Genel) —";
+          selF.appendChild(oz);
+          for (const f of folders) {
+            const o = document.createElement("option");
+            o.value = f.id;
+            o.textContent = f.name;
+            selF.appendChild(o);
+          }
+          selF.value = n.folderId || "";
+          const ro = n.reminderOffset == null ? "" : String(n.reminderOffset);
+          const remindDetails = document.createElement("details");
+          remindDetails.className = "note-remind";
+          if (n.reminderOffset !== null && n.dueDate) remindDetails.open = true;
+          const sumRem = document.createElement("summary");
+          sumRem.textContent = "Hatırlatma";
+          const remindWrap = document.createElement("div");
+          remindWrap.className = "note-remind-grid";
+          remindWrap.innerHTML = `
+            <div><label>Gün</label><input type="date" class="en-date" value="${escapeAttr(n.dueDate || "")}" /></div>
+            <div><label>Saat</label><input type="time" class="en-time" value="${escapeAttr(n.dueTime || "")}" /></div>
+            <div class="full"><label>Uyarı</label>
+              <select class="en-remind">
+                <option value="">Kapalı</option>
+                <option value="0">Tam vakitte</option>
+                <option value="15">15 dk önce</option>
+                <option value="60">1 saat önce</option>
+                <option value="1440">1 gün önce</option>
+              </select>
+            </div>`;
+          remindWrap.querySelector(".en-remind").value = ro;
+          remindDetails.append(sumRem, remindWrap);
+          const ta = document.createElement("textarea");
+          ta.value = n.body;
+          ta.maxLength = 50000;
+          const row = document.createElement("div");
+          row.className = "row";
+          row.style.marginBottom = "0";
+          const saveBtn = document.createElement("button");
+          saveBtn.type = "button";
+          saveBtn.className = "btn";
+          saveBtn.textContent = "Güncelle";
+          saveBtn.addEventListener("click", () => {
+            const nt = titleIn.value.trim().slice(0, 200);
+            if (!nt) {
+              alert("Başlık gerekli.");
+              titleIn.focus();
+              return;
+            }
+            const d = remindDetails.querySelector(".en-date").value || null;
+            const tm = remindDetails.querySelector(".en-time").value || null;
+            const rv = remindDetails.querySelector(".en-remind").value;
+            const rOff = rv === "" ? null : Number(rv);
+            if (rOff !== null && !d) {
+              alert("Hatırlatma için gün seçin.");
+              return;
+            }
+            n.title = nt;
+            n.body = ta.value.trim().slice(0, 50000);
+            let fid = selF.value || null;
+            if (fid && !folders.some((x) => x.id === fid)) fid = null;
+            n.folderId = fid;
+            n.dueDate = d;
+            n.dueTime = tm;
+            n.reminderOffset = rOff;
+            n.reminderFiredFor = null;
+            n.updatedAt = Date.now();
+            editingNoteId = null;
+            persist();
+            renderAll();
+          });
+          const cancelBtn = document.createElement("button");
+          cancelBtn.type = "button";
+          cancelBtn.className = "btn-ghost";
+          cancelBtn.textContent = "Kapat";
+          cancelBtn.addEventListener("click", () => {
+            editingNoteId = null;
+            renderNotes();
+          });
+          row.append(saveBtn, cancelBtn);
+          ed.append(titleIn, labF, selF, remindDetails, ta, row);
+          li.appendChild(ed);
+        }
+
+        noteList.appendChild(li);
+      }
+    }
+
+    function renderTasks() {
+      const v = visibleTasks();
+      taskList.innerHTML = "";
+      taskEmpty.hidden = tasks.length > 0;
+      updateDockBadge();
+      updateTitle();
+
+      if (tasks.length === 0) {
+        taskCount.textContent = "";
+        clearDone.style.visibility = "hidden";
+        return;
+      }
+      clearDone.style.visibility = "visible";
+      const active = tasks.filter((t) => !t.done).length;
+      taskCount.textContent = active ? `${active} aktif` : "Tamam";
+
+      if (v.length === 0 && tasks.length > 0) {
+        const li = document.createElement("li");
+        li.className = "empty";
+        li.textContent = "Sonuç yok.";
+        taskList.appendChild(li);
+        return;
+      }
+
+      const customSort = sortByEl.value === "custom";
+
+      for (const t of v) {
+        const li = document.createElement("li");
+        li.className = "task" + (t.done ? " done" : "") + (isOverdue(t) ? " overdue" : "");
+
+        const grip = document.createElement("span");
+        grip.className = "grip" + (customSort ? "" : " inactive");
+        grip.textContent = "⋮⋮";
+        grip.draggable = customSort;
+        grip.addEventListener("dragstart", (e) => {
+          if (!customSort) return;
+          dragId = t.id;
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", t.id);
+        });
+        grip.addEventListener("dragend", () => {
+          dragId = null;
+        });
+        li.addEventListener("dragover", (e) => {
+          if (!customSort || !dragId) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+        });
+        li.addEventListener("drop", (e) => {
+          e.preventDefault();
+          if (!customSort || !dragId) return;
+          reorderFromDrag(dragId, t.id);
+          dragId = null;
+          renderTasks();
+        });
+
+        const main = document.createElement("label");
+        main.className = "main";
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = t.done;
+        cb.addEventListener("change", () => {
+          const was = t.done;
+          t.done = cb.checked;
+          if (t.done) t.reminderFiredFor = null;
+          if (t.done && !was && t.repeat) {
+            tasks.push(
+              normalizeTask({
+                id: uid(),
+                text: t.text,
+                done: false,
+                dueDate: nextDueDate(t.dueDate || todayISO(), t.repeat),
+                dueTime: t.dueTime,
+                reminderOffset: t.reminderOffset,
+                reminderFiredFor: null,
+                category: t.category,
+                priority: t.priority,
+                notes: t.notes,
+                repeat: t.repeat,
+                snoozeUntil: null,
+              })
+            );
+          }
+          persist();
+          renderAll();
+        });
+
+        const body = document.createElement("div");
+        body.className = "body";
+        const title = document.createElement("div");
+        title.className = "title";
+        title.textContent = t.text;
+        body.appendChild(title);
+
+        const badges = document.createElement("div");
+        badges.className = "badges";
+        const cat = document.createElement("span");
+        cat.className = "badge";
+        cat.textContent = CAT_LABEL[t.category] || "Genel";
+        badges.appendChild(cat);
+        const pr = document.createElement("span");
+        pr.className = "badge p" + t.priority;
+        pr.textContent = t.priority === 1 ? "Yüksek" : t.priority === 3 ? "Düşük" : "Orta";
+        badges.appendChild(pr);
+        body.appendChild(badges);
+
+        const metaParts = describeMeta(t);
+        if (metaParts.length) {
+          const meta = document.createElement("div");
+          meta.className = "meta";
+          metaParts.forEach((x) => {
+            const s = document.createElement("span");
+            s.textContent = x;
+            meta.appendChild(s);
+          });
+          body.appendChild(meta);
+        }
+        if (t.notes && editingTaskId !== t.id) {
+          const np = document.createElement("div");
+          np.className = "note-preview tiny";
+          np.textContent = t.notes;
+          body.appendChild(np);
+        }
+
+        main.append(cb, body);
+
+        const acts = document.createElement("div");
+        acts.className = "acts";
+        if (!t.done) {
+          const sn15 = document.createElement("button");
+          sn15.type = "button";
+          sn15.textContent = "15′";
+          sn15.title = "15 dk ertele";
+          sn15.addEventListener("click", () => {
+            t.snoozeUntil = Date.now() + 15 * 60 * 1000;
+            t.reminderFiredFor = null;
+            persist();
+            renderAll();
+          });
+          const sn60 = document.createElement("button");
+          sn60.type = "button";
+          sn60.textContent = "1s";
+          sn60.title = "1 saat ertele";
+          sn60.addEventListener("click", () => {
+            t.snoozeUntil = Date.now() + 60 * 60 * 1000;
+            t.reminderFiredFor = null;
+            persist();
+            renderAll();
+          });
+          acts.append(sn15, sn60);
+        }
+        const editBtn = document.createElement("button");
+        editBtn.type = "button";
+        editBtn.textContent = "⋯";
+        editBtn.addEventListener("click", () => {
+          editingTaskId = editingTaskId === t.id ? null : t.id;
+          renderTasks();
+        });
+        const del = document.createElement("button");
+        del.type = "button";
+        del.textContent = "×";
+        del.addEventListener("click", () => {
+          tasks = tasks.filter((x) => x.id !== t.id);
+          if (editingTaskId === t.id) editingTaskId = null;
+          persist();
+          renderAll();
+        });
+        acts.append(editBtn, del);
+
+        li.append(grip, main, acts);
+        taskList.appendChild(li);
+
+        if (editingTaskId === t.id) {
+          const panel = document.createElement("div");
+          panel.className = "panel";
+          const ro = t.reminderOffset == null ? "" : String(t.reminderOffset);
+          panel.innerHTML = `
+            <div class="grid">
+              <div><label>Gün</label><input type="date" class="e-date" value="${escapeAttr(t.dueDate || "")}" /></div>
+              <div><label>Saat</label><input type="time" class="e-time" value="${escapeAttr(t.dueTime || "")}" /></div>
+              <div class="full"><label>Hatırlatma</label>
+                <select class="e-remind">
+                  <option value="">Yok</option>
+                  <option value="0">Tam vakitte</option>
+                  <option value="15">15 dk önce</option>
+                  <option value="60">1 saat önce</option>
+                  <option value="1440">1 gün önce</option>
+                </select>
+              </div>
+              <div><label>Kategori</label>
+                <select class="e-cat">
+                  <option value="">Genel</option>
+                  <option value="is">İş</option>
+                  <option value="kisisel">Kişisel</option>
+                  <option value="saglik">Sağlık</option>
+                </select>
+              </div>
+              <div><label>Öncelik</label>
+                <select class="e-pri">
+                  <option value="1">Yüksek</option>
+                  <option value="2">Orta</option>
+                  <option value="3">Düşük</option>
+                </select>
+              </div>
+              <div class="full"><label>Tekrar</label>
+                <select class="e-rep">
+                  <option value="">Yok</option>
+                  <option value="daily">Her gün</option>
+                  <option value="weekly">Her hafta</option>
+                  <option value="monthly">Her ay</option>
+                </select>
+              </div>
+              <div class="full"><label>Not</label><textarea class="e-notes" maxlength="2000"></textarea></div>
+            </div>
+            <div class="row" style="margin-top:0.35rem;margin-bottom:0">
+              <button type="button" class="btn e-save">Kaydet</button>
+              <button type="button" class="btn-ghost e-cancel">Vazgeç</button>
+            </div>`;
+          panel.querySelector(".e-remind").value = ro;
+          panel.querySelector(".e-cat").value = t.category || "";
+          panel.querySelector(".e-pri").value = String(t.priority);
+          panel.querySelector(".e-rep").value = t.repeat || "";
+          panel.querySelector(".e-notes").value = t.notes || "";
+
+          panel.querySelector(".e-save").addEventListener("click", () => {
+            t.dueDate = panel.querySelector(".e-date").value || null;
+            t.dueTime = panel.querySelector(".e-time").value || null;
+            const rv = panel.querySelector(".e-remind").value;
+            t.reminderOffset = rv === "" ? null : Number(rv);
+            t.category = panel.querySelector(".e-cat").value || "";
+            t.priority = Number(panel.querySelector(".e-pri").value);
+            const rp = panel.querySelector(".e-rep").value;
+            t.repeat = rp || null;
+            t.notes = panel.querySelector(".e-notes").value.trim().slice(0, 2000);
+            t.reminderFiredFor = null;
+            if (t.reminderOffset !== null && !t.dueDate) {
+              alert("Hatırlatma için gün gerekli.");
+              return;
+            }
+            editingTaskId = null;
+            persist();
+            renderAll();
+          });
+          panel.querySelector(".e-cancel").addEventListener("click", () => {
+            editingTaskId = null;
+            renderTasks();
+          });
+          li.appendChild(panel);
+        }
+      }
+    }
+
+    function renderAll() {
+      renderSidebar();
+      renderNotes();
+      renderTasks();
+    }
+
+    noteForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const title = noteTitleInput.value.trim().slice(0, 200);
+      const body = noteBody.value.trim().slice(0, 50000);
+      if (!title) {
+        alert("Lütfen bir başlık yazın.");
+        noteTitleInput.focus();
+        return;
+      }
+      const ro = noteReminderOffsetEl.value;
+      const dueDate = noteDueDateEl.value || null;
+      const dueTime = noteDueTimeEl.value || null;
+      const reminderOffset = ro === "" ? null : Number(ro);
+      if (reminderOffset !== null && !dueDate) {
+        alert("Hatırlatma için bir gün seçin (veya hatırlatmayı Kapalı bırakın).");
+        noteDueDateEl.focus();
+        return;
+      }
+      let folderId = noteFolderSelect.value || null;
+      if (folderId && !folders.some((f) => f.id === folderId)) folderId = null;
+      notes.push(
+        normalizeNote({
+          id: uid(),
+          title,
+          body,
+          updatedAt: Date.now(),
+          pinned: false,
+          folderId,
+          dueDate,
+          dueTime,
+          reminderOffset,
+          reminderFiredFor: null,
+          snoozeUntil: null,
+        })
+      );
+      noteTitleInput.value = "";
+      noteBody.value = "";
+      noteDueDateEl.value = "";
+      noteDueTimeEl.value = "";
+      noteReminderOffsetEl.value = "";
+      if (noteRemindDetails) noteRemindDetails.open = false;
+      noteFolderSelect.value = "";
+      persist();
+      renderAll();
+      closeNoteModal();
+    });
+
+    taskForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const text = taskInput.value.trim();
+      if (!text) return;
+      const ro = reminderOffsetEl.value;
+      const task = normalizeTask({
+        id: uid(),
+        text,
+        done: false,
+        dueDate: dueDateEl.value || null,
+        dueTime: dueTimeEl.value || null,
+        reminderOffset: ro === "" ? null : Number(ro),
+        reminderFiredFor: null,
+        category: categoryEl.value || "",
+        priority: Number(priorityEl.value),
+        notes: taskNotesEl.value.trim().slice(0, 2000),
+        repeat: repeatEl.value || null,
+        snoozeUntil: null,
+      });
+      if (task.reminderOffset !== null && !task.dueDate) {
+        alert("Hatırlatma için gün seçin.");
+        dueDateEl.focus();
+        return;
+      }
+      tasks.push(task);
+      taskInput.value = "";
+      dueDateEl.value = "";
+      dueTimeEl.value = "";
+      reminderOffsetEl.value = "";
+      categoryEl.value = "";
+      priorityEl.value = "2";
+      repeatEl.value = "";
+      taskNotesEl.value = "";
+      persist();
+      renderAll();
+      tasksDock.open = true;
+      taskInput.focus();
+    });
+
+    if (folderNav) {
+      folderNav.addEventListener("click", (e) => {
+        const navBtn = e.target.closest("button.folder-row[data-folder-view]");
+        if (navBtn) {
+          selectedFolderView = navBtn.dataset.folderView;
+          renderAll();
+        }
+      });
+    }
+
+    addFolderBtn.addEventListener("click", () => {
+      const name = newFolderName.value.trim().slice(0, 40);
+      if (!name) return;
+      const nf = normalizeFolder({ id: uid(), name });
+      folders.push(nf);
+      newFolderName.value = "";
+      selectedFolderView = nf.id;
+      persist();
+      renderAll();
+    });
+
+    newFolderName.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addFolderBtn.click();
+      }
+    });
+
+    clearDone.addEventListener("click", () => {
+      tasks = tasks.filter((t) => !t.done);
+      persist();
+      renderAll();
+    });
+
+    filterPills.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        taskFilter = btn.dataset.filter;
+        filterPills.forEach((b) => b.classList.toggle("on", b === btn));
+        renderTasks();
+      });
+    });
+
+    [catFilter, sortByEl, taskSearch].forEach((el) => {
+      el.addEventListener("input", () => renderTasks());
+      el.addEventListener("change", () => renderTasks());
+    });
+
+    themeBtn.addEventListener("click", () => {
+      const cur = document.documentElement.getAttribute("data-theme");
+      const next = cur === "dark" ? "light" : "dark";
+      localStorage.setItem(THEME_KEY, next);
+      applyTheme();
+    });
+
+    if (window.matchMedia) {
+      window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
+        if (!localStorage.getItem(THEME_KEY)) applyTheme();
+      });
+    }
+
+    notifBtn.addEventListener("click", async () => {
+      if (!("Notification" in window)) return;
+      await Notification.requestPermission();
+      updateNotifBtn();
+      checkReminders();
+    });
+
+    exportBtn.addEventListener("click", () => {
+      const blob = new Blob(
+        [JSON.stringify({ version: 5, notes, tasks, folders }, null, 2)],
+        { type: "application/json" }
+      );
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `notlarim-${todayISO()}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    importBtn.addEventListener("click", () => importInput.click());
+    importInput.addEventListener("change", () => {
+      const f = importInput.files[0];
+      if (!f) return;
+      const r = new FileReader();
+      r.onload = () => {
+        try {
+          const data = JSON.parse(r.result);
+          if (Array.isArray(data)) {
+            tasks = data.map(normalizeTask);
+            folders = [];
+          } else if (data.tasks && Array.isArray(data.tasks)) {
+            tasks = data.tasks.map(normalizeTask);
+            folders = Array.isArray(data.folders) ? data.folders.map(normalizeFolder) : [];
+            notes = Array.isArray(data.notes) ? data.notes.map(normalizeNote) : [];
+          } else {
+            throw new Error("format");
+          }
+          persist();
+          renderAll();
+        } catch {
+          alert("Geçersiz dosya.");
+        }
+        importInput.value = "";
+      };
+      r.readAsText(f);
+    });
+
+    fabBtn.addEventListener("click", () => {
+      if (noteModalOverlay.classList.contains("visible")) closeNoteModal();
+      else openNoteModal();
+    });
+
+    noteModalClose.addEventListener("click", closeNoteModal);
+    noteModalCancelBtn.addEventListener("click", closeNoteModal);
+
+    noteModalOverlay.addEventListener("click", (e) => {
+      if (e.target === noteModalOverlay) closeNoteModal();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && noteModalOverlay.classList.contains("visible")) closeNoteModal();
+    });
+
+    noteSearchEl.addEventListener("input", () => renderNotes());
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") checkReminders();
+    });
+
+    setInterval(checkReminders, 30 * 1000);
+
+    load();
+    applyTheme();
+    updateNotifBtn();
+    renderAll();
+    checkReminders();
+  </script>
+  <script>
+    (function () {
+      if (!("serviceWorker" in navigator)) return;
+      var ok =
+        location.protocol === "https:" ||
+        location.hostname === "localhost" ||
+        location.hostname === "127.0.0.1";
+      if (!ok) return;
+      window.addEventListener("load", function () {
+        navigator.serviceWorker.register("./sw.js").catch(function () {});
+      });
+    })();
+  </script>
+</body>
+</html>

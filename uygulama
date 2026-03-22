@@ -1,0 +1,1 @@
+PWA: siteyi HTTPS veya localhost üzerinde açın (çift tıklama file:// ile Service Worker çalışmaz). Örnek: klasörde "npx serve" veya VS Code Live Server. Chrome/Edge: adres çubuğundaki kur simgesi veya menüden "Uygulama yükle / Ana ekrana ekle". İkonları yeniden üretmek için: powershell -File scripts/gen-icons.ps1
