@@ -156,13 +156,16 @@
     }
 
     .folder-item {
+      display: block;
+    }
+
+    .folder-item-head {
       display: flex;
       align-items: center;
       gap: 0.15rem;
-      flex-wrap: wrap;
     }
 
-    .folder-item .folder-row {
+    .folder-item-head .folder-row {
       flex: 1;
       min-width: 0;
     }
@@ -1828,7 +1831,10 @@
           renderAll();
         });
 
-        li.append(row, del);
+        const head = document.createElement("div");
+        head.className = "folder-item-head";
+        head.append(row, del);
+        li.appendChild(head);
 
         // Klasör açıksa altında notları göster
         if (isExpanded) {
@@ -2706,11 +2712,16 @@
 
     setInterval(checkReminders, 30 * 1000);
 
-    load();
-    applyTheme();
-    updateNotifBtn();
-    renderAll();
-    checkReminders();
+    try {
+      load();
+      applyTheme();
+      updateNotifBtn();
+      renderAll();
+      checkReminders();
+    } catch(err) {
+      document.title = "HATA: " + err.message;
+      console.error(err);
+    }
   </script>
   <script>
     (function () {
