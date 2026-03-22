@@ -416,6 +416,13 @@
     li.note {
       padding: 0.85rem 0;
       border-bottom: 1px solid var(--border);
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    li.note .note-content {
+      flex: 1;
+      min-width: 0;
     }
 
     li.note:last-child {
@@ -661,6 +668,93 @@
     #importInput {
       display: none;
     }
+
+    /* —— Not renk sistemi —— */
+    .color-picker {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-bottom: 0.5rem;
+    }
+
+    .color-picker-label {
+      display: block;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.25rem;
+    }
+
+    .color-dot {
+      width: 1.4rem;
+      height: 1.4rem;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.1s, border-color 0.1s;
+      position: relative;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.15);
+    }
+
+    .color-dot.active {
+      border-color: var(--text);
+    }
+
+    .color-dot.active::after {
+      content: "✓";
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #fff;
+      font-weight: 700;
+    }
+
+    .color-dot[data-color=""] { background: var(--border); }
+    .color-dot[data-color=""].active::after { color: var(--text); }
+    .color-dot[data-color="red"] { background: #ef4444; }
+    .color-dot[data-color="orange"] { background: #f97316; }
+    .color-dot[data-color="yellow"] { background: #eab308; }
+    .color-dot[data-color="green"] { background: #22c55e; }
+    .color-dot[data-color="blue"] { background: #3b82f6; }
+    .color-dot[data-color="purple"] { background: #a855f7; }
+    .color-dot[data-color="pink"] { background: #ec4899; }
+
+    .note-color-bar {
+      width: 4px;
+      border-radius: 2px;
+      flex-shrink: 0;
+      align-self: stretch;
+    }
+
+    .note-color-bar[data-color="red"] { background: #ef4444; }
+    .note-color-bar[data-color="orange"] { background: #f97316; }
+    .note-color-bar[data-color="yellow"] { background: #eab308; }
+    .note-color-bar[data-color="green"] { background: #22c55e; }
+    .note-color-bar[data-color="blue"] { background: #3b82f6; }
+    .note-color-bar[data-color="purple"] { background: #a855f7; }
+    .note-color-bar[data-color="pink"] { background: #ec4899; }
+
+    .folder-note-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .folder-note-dot[data-color="red"] { background: #ef4444; }
+    .folder-note-dot[data-color="orange"] { background: #f97316; }
+    .folder-note-dot[data-color="yellow"] { background: #eab308; }
+    .folder-note-dot[data-color="green"] { background: #22c55e; }
+    .folder-note-dot[data-color="blue"] { background: #3b82f6; }
+    .folder-note-dot[data-color="purple"] { background: #a855f7; }
+    .folder-note-dot[data-color="pink"] { background: #ec4899; }
 
     /* —— FAB butonu —— */
     .fab {
@@ -1147,6 +1241,17 @@
         </select>
         <input type="text" class="note-title-input" id="noteTitle" placeholder="Başlık" maxlength="200" autocomplete="off" />
         <textarea id="noteBody" placeholder="Not metni…" maxlength="50000"></textarea>
+        <span class="color-picker-label">Renk</span>
+        <div class="color-picker" id="noteColorPicker">
+          <span class="color-dot active" data-color="" title="Renksiz"></span>
+          <span class="color-dot" data-color="red" title="Kırmızı"></span>
+          <span class="color-dot" data-color="orange" title="Turuncu"></span>
+          <span class="color-dot" data-color="yellow" title="Sarı"></span>
+          <span class="color-dot" data-color="green" title="Yeşil"></span>
+          <span class="color-dot" data-color="blue" title="Mavi"></span>
+          <span class="color-dot" data-color="purple" title="Mor"></span>
+          <span class="color-dot" data-color="pink" title="Pembe"></span>
+        </div>
         <details class="note-remind" id="noteRemindDetails">
           <summary>Hatırlatma</summary>
           <div class="note-remind-grid">
@@ -1357,6 +1462,8 @@
     const fabBtn = $("fabBtn");
     const noteSearchEl = $("noteSearch");
     const generalFolderWrap = $("generalFolderWrap");
+    const noteColorPicker = $("noteColorPicker");
+    let selectedNoteColor = "";
 
     function openNoteModal() {
       noteModalOverlay.classList.add("visible");
@@ -1394,6 +1501,7 @@
         reminderOffset: rOff,
         reminderFiredFor: n.reminderFiredFor ?? null,
         snoozeUntil: n.snoozeUntil != null ? Number(n.snoozeUntil) : null,
+        color: n.color || "",
       };
     }
 
@@ -1752,7 +1860,14 @@
         date.textContent = formatNoteTime(n.updatedAt);
 
         info.append(title, date);
-        li.append(grip, info);
+        if (n.color) {
+          var dot = document.createElement("span");
+          dot.className = "folder-note-dot";
+          dot.dataset.color = n.color;
+          li.append(grip, dot, info);
+        } else {
+          li.append(grip, info);
+        }
 
         li.addEventListener("click", (e) => {
           if (e.target.closest(".folder-note-grip")) return;
@@ -2050,6 +2165,16 @@
           (n.pinned ? " pinned" : "") +
           (isNoteOverdue(n) ? " overdue" : "");
 
+        if (n.color) {
+          const colorBar = document.createElement("div");
+          colorBar.className = "note-color-bar";
+          colorBar.dataset.color = n.color;
+          li.appendChild(colorBar);
+        }
+
+        const noteContent = document.createElement("div");
+        noteContent.className = "note-content";
+
         const head = document.createElement("div");
         head.className = "note-head";
         const block = document.createElement("div");
@@ -2080,7 +2205,7 @@
         time.className = "note-time";
         time.textContent = formatNoteTime(n.updatedAt);
         head.append(block, time);
-        li.appendChild(head);
+        noteContent.appendChild(head);
 
         const actions = document.createElement("div");
         actions.className = "note-actions";
@@ -2130,7 +2255,7 @@
           renderAll();
         });
         actions.append(pinBtn, delBtn);
-        li.appendChild(actions);
+        noteContent.appendChild(actions);
 
         if (editingNoteId === n.id) {
           const ed = document.createElement("div");
@@ -2184,6 +2309,27 @@
           const ta = document.createElement("textarea");
           ta.value = n.body;
           ta.maxLength = 50000;
+          var COLORS = ["", "red", "orange", "yellow", "green", "blue", "purple", "pink"];
+          var COLOR_NAMES = {"": "Renksiz", "red": "Kirmizi", "orange": "Turuncu", "yellow": "Sari", "green": "Yesil", "blue": "Mavi", "purple": "Mor", "pink": "Pembe"};
+          var editColor = n.color || "";
+          var colorLabel = document.createElement("span");
+          colorLabel.className = "color-picker-label";
+          colorLabel.textContent = "Renk";
+          var editColorPicker = document.createElement("div");
+          editColorPicker.className = "color-picker";
+          COLORS.forEach(function(c) {
+            var dot = document.createElement("span");
+            dot.className = "color-dot" + (c === editColor ? " active" : "");
+            dot.dataset.color = c;
+            dot.title = COLOR_NAMES[c] || c;
+            dot.addEventListener("click", function() {
+              editColor = c;
+              editColorPicker.querySelectorAll(".color-dot").forEach(function(d) {
+                d.classList.toggle("active", d.dataset.color === editColor);
+              });
+            });
+            editColorPicker.appendChild(dot);
+          });
           const row = document.createElement("div");
           row.className = "row";
           row.style.marginBottom = "0";
@@ -2215,6 +2361,7 @@
             n.dueTime = tm;
             n.reminderOffset = rOff;
             n.reminderFiredFor = null;
+            n.color = editColor;
             n.updatedAt = Date.now();
             editingNoteId = null;
             persist();
@@ -2229,10 +2376,11 @@
             renderNotes();
           });
           row.append(saveBtn, cancelBtn);
-          ed.append(titleIn, labF, selF, remindDetails, ta, row);
-          li.appendChild(ed);
+          ed.append(titleIn, labF, selF, colorLabel, editColorPicker, remindDetails, ta, row);
+          noteContent.appendChild(ed);
         }
 
+        li.appendChild(noteContent);
         noteList.appendChild(li);
       }
     }
@@ -2528,6 +2676,7 @@
           reminderOffset,
           reminderFiredFor: null,
           snoozeUntil: null,
+          color: selectedNoteColor,
         })
       );
       noteTitleInput.value = "";
@@ -2537,6 +2686,10 @@
       noteReminderOffsetEl.value = "";
       if (noteRemindDetails) noteRemindDetails.open = false;
       noteFolderSelect.value = "";
+      selectedNoteColor = "";
+      noteColorPicker.querySelectorAll(".color-dot").forEach(function(d) {
+        d.classList.toggle("active", d.dataset.color === "");
+      });
       persist();
       renderAll();
       closeNoteModal();
@@ -2612,6 +2765,15 @@
       expandedFolders.add(nf.id);
       persist();
       renderAll();
+    });
+
+    noteColorPicker.addEventListener("click", (e) => {
+      const dot = e.target.closest(".color-dot");
+      if (!dot) return;
+      selectedNoteColor = dot.dataset.color;
+      noteColorPicker.querySelectorAll(".color-dot").forEach(function(d) {
+        d.classList.toggle("active", d.dataset.color === selectedNoteColor);
+      });
     });
 
     newFolderName.addEventListener("keydown", (e) => {
