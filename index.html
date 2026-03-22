@@ -1809,8 +1809,13 @@
           renderAll();
         });
 
-        row.addEventListener("dblclick", (e) => {
-          e.preventDefault();
+        const renameBtn = document.createElement("button");
+        renameBtn.type = "button";
+        renameBtn.className = "folder-del";
+        renameBtn.setAttribute("aria-label", "Yeniden adlandır");
+        renameBtn.textContent = "✎";
+        renameBtn.addEventListener("click", (e) => {
+          e.stopPropagation();
           const nn = prompt("Klasör adı", f.name);
           if (nn == null) return;
           const t = nn.trim().slice(0, 40);
@@ -1840,7 +1845,7 @@
 
         const head = document.createElement("div");
         head.className = "folder-item-head";
-        head.append(row, del);
+        head.append(row, renameBtn, del);
         li.appendChild(head);
 
         // Klasör açıksa altında notları göster
