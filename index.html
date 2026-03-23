@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#18181b" />
+  <meta name="theme-color" content="#080e1a" />
   <meta name="description" content="Minimal not defteri ve görev hatırlatmaları" />
   <title>Notlarım</title>
   <link rel="manifest" href="manifest.json" />
@@ -12,27 +12,48 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Notlarım" />
   <meta name="mobile-web-app-capable" content="yes" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #fafafa;
-      --surface: #fff;
-      --border: #e4e4e7;
-      --text: #18181b;
-      --muted: #71717a;
-      --accent: #27272a;
-      --accent-fg: #fafafa;
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --surface-dim: #e8eaed;
+      --surface-container-low: #f5f6f8;
+      --surface-container-high: #e0e3e8;
+      --surface-container-highest: #d5d8de;
+      --text: #0a1323;
+      --text-secondary: #4a5568;
+      --muted: #718096;
+      --primary: #4edea3;
+      --primary-container: #005236;
+      --on-primary: #004a31;
+      --tertiary: #d4e8c0;
+      --outline-variant: rgba(53, 72, 107, 0.15);
       --warn: #ca8a04;
+      --accent: #4edea3;
+      --accent-fg: #004a31;
     }
 
     [data-theme="dark"] {
-      --bg: #09090b;
-      --surface: #18181b;
-      --border: #27272a;
-      --text: #fafafa;
-      --muted: #a1a1aa;
-      --accent: #e4e4e7;
-      --accent-fg: #18181b;
+      --bg: #080e1a;
+      --surface: #0a1323;
+      --surface-dim: #060b15;
+      --surface-container-low: #0a1323;
+      --surface-container-high: #0f1f3a;
+      --surface-container-highest: #102546;
+      --text: #dbe5ff;
+      --text-secondary: #98abd4;
+      --muted: #98abd4;
+      --primary: #4edea3;
+      --primary-container: #005236;
+      --on-primary: #004a31;
+      --tertiary: #f4fed3;
+      --outline-variant: rgba(53, 72, 107, 0.15);
       --warn: #eab308;
+      --accent: #4edea3;
+      --accent-fg: #004a31;
     }
 
     * {
@@ -42,7 +63,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       font-size: 15px;
       background: var(--bg);
       color: var(--text);
@@ -57,34 +78,33 @@
       min-height: calc(100vh - 3rem);
     }
 
+    /* ── Sidebar ── */
     .sidebar {
       width: 16rem;
       flex-shrink: 0;
-      border-right: 1px solid var(--border);
       background: var(--surface);
-      padding: 0.75rem 0.5rem;
+      padding: 1.25rem 0.75rem;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.5rem;
     }
 
     .sidebar-head {
       font-size: 0.65rem;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.08em;
       color: var(--muted);
-      padding: 0 0.35rem 0.25rem;
+      padding: 0 0.35rem 0.35rem;
     }
 
     .folder-nav {
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
-      padding: 0.2rem;
+      border-radius: 8px;
+      background: var(--surface-container-low);
+      padding: 0.3rem;
       display: flex;
       flex-direction: column;
-      gap: 0.1rem;
+      gap: 0.15rem;
       flex: 1;
       min-height: 0;
       overflow-y: auto;
@@ -94,9 +114,9 @@
     .folder-row {
       width: 100%;
       text-align: left;
-      padding: 0.4rem 0.45rem;
+      padding: 0.5rem 0.55rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       background: transparent;
       color: var(--text);
       font: inherit;
@@ -106,14 +126,15 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.35rem;
+      transition: background 0.15s;
     }
 
     .folder-row:hover {
-      background: var(--border);
+      background: var(--surface-container-high);
     }
 
     .folder-row.active {
-      background: var(--border);
+      background: var(--surface-container-high);
       font-weight: 600;
     }
 
@@ -126,8 +147,7 @@
     .folder-sep {
       font-size: 0.65rem;
       color: var(--muted);
-      padding: 0.35rem 0.35rem 0.15rem;
-      border-top: 1px solid var(--border);
+      padding: 0.5rem 0.35rem 0.2rem;
       margin-top: 0.25rem;
     }
 
@@ -141,17 +161,23 @@
     .sidebar-add input {
       flex: 1;
       min-width: 0;
-      padding: 0.35rem 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: var(--bg);
+      padding: 0.4rem 0.5rem;
+      border: 1px solid var(--outline-variant);
+      border-radius: 6px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-size: 0.75rem;
     }
 
+    .sidebar-add input:focus {
+      outline: none;
+      border-color: rgba(78, 222, 163, 0.4);
+      box-shadow: 0 0 0 4px rgba(78, 222, 163, 0.08);
+    }
+
     .sidebar-add .btn-ghost {
-      padding: 0.35rem 0.45rem;
+      padding: 0.4rem 0.55rem;
       font-size: 0.72rem;
     }
 
@@ -180,33 +206,33 @@
       transform: rotate(90deg);
     }
 
-    /* —— Klasör altı not listesi —— */
+    /* ── Klasor alti not listesi ── */
     .folder-note-list {
       width: 100%;
       list-style: none;
       margin: 0;
-      padding: 0 0 0.15rem 0.6rem;
+      padding: 0.1rem 0 0.15rem 0.6rem;
     }
 
     .folder-note-item {
       display: flex;
       align-items: center;
       gap: 0.25rem;
-      padding: 0.3rem 0.35rem;
-      border-radius: 4px;
+      padding: 0.35rem 0.4rem;
+      border-radius: 6px;
       cursor: pointer;
       font-size: 0.75rem;
       border-left: 2px solid transparent;
-      transition: background 0.1s;
+      transition: background 0.15s;
     }
 
     .folder-note-item:hover {
-      background: var(--border);
+      background: var(--surface-container-high);
     }
 
     .folder-note-item.selected {
-      background: var(--border);
-      border-left-color: var(--text);
+      background: var(--surface-container-high);
+      border-left-color: var(--primary);
     }
 
     .folder-note-grip {
@@ -243,7 +269,7 @@
     }
 
     .folder-note-item.drag-over {
-      border-top: 2px solid var(--text);
+      border-top: 2px solid var(--primary);
     }
 
     .folder-del {
@@ -251,22 +277,24 @@
       width: 1.5rem;
       height: 1.5rem;
       border: none;
-      border-radius: 4px;
+      border-radius: 6px;
       background: transparent;
       color: var(--muted);
       cursor: pointer;
       font-size: 0.85rem;
       line-height: 1;
+      transition: background 0.15s, color 0.15s;
     }
 
     .folder-del:hover {
       color: var(--text);
-      background: var(--border);
+      background: var(--surface-container-high);
     }
 
     .main-area {
       flex: 1;
       min-width: 0;
+      background: var(--bg);
     }
 
     @media (max-width: 640px) {
@@ -280,13 +308,10 @@
         min-height: auto;
       }
 
-      /* Sidebar: telefonda kompakt yatay */
       .sidebar {
         width: 100%;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
         max-height: none;
-        padding: 0.6rem;
+        padding: 0.75rem;
         gap: 0.3rem;
       }
 
@@ -301,7 +326,7 @@
       }
 
       .folder-row {
-        padding: 0.5rem 0.5rem;
+        padding: 0.55rem 0.55rem;
         font-size: 0.85rem;
       }
 
@@ -310,7 +335,7 @@
       }
 
       .folder-note-item {
-        padding: 0.4rem 0.35rem;
+        padding: 0.45rem 0.4rem;
         font-size: 0.8rem;
       }
 
@@ -336,7 +361,6 @@
         font-size: 0.8rem;
       }
 
-      /* Ana alan: telefonda daha geniş padding */
       .wrap {
         padding: 1rem 0.85rem 2rem;
       }
@@ -361,9 +385,8 @@
         margin-bottom: 0.6rem;
       }
 
-      /* Not kartlari: daha fazla nefes */
       li.note {
-        padding: 1rem 0;
+        padding: 1rem;
         gap: 0.6rem;
       }
 
@@ -394,7 +417,6 @@
         width: 5px;
       }
 
-      /* Not editoru */
       .note-editor textarea {
         min-height: 10rem;
         font-size: 0.95rem;
@@ -416,7 +438,6 @@
         padding: 0.5rem 0.6rem;
       }
 
-      /* Renk secici: telefonda biraz buyuk */
       .color-dot {
         width: 1.7rem;
         height: 1.7rem;
@@ -426,7 +447,6 @@
         gap: 0.45rem;
       }
 
-      /* FAB butonu: telefonda biraz buyuk ve yukarida */
       .fab {
         bottom: 5rem;
         right: 1rem;
@@ -435,19 +455,17 @@
         font-size: 2.2rem;
       }
 
-      /* Modal: telefona ozel */
       .note-modal {
         width: calc(100vw - 1.5rem);
         max-height: calc(100vh - 2rem);
         padding: 1.2rem;
-        border-radius: 10px;
+        border-radius: 12px;
       }
 
       .note-modal-head h2 {
         font-size: 1.05rem;
       }
 
-      /* Gorev paneli: telefonda daha genis */
       .tasks-dock {
         width: min(22rem, calc(100vw - 1rem));
         right: 0.5rem;
@@ -472,7 +490,6 @@
         padding: 0.45rem 0.65rem;
       }
 
-      /* Genel butonlar */
       .btn {
         padding: 0.55rem 0.9rem;
         font-size: 0.95rem;
@@ -488,7 +505,6 @@
         padding: 2.5rem 1rem;
       }
 
-      /* Hatirlatma alanlari */
       .note-remind-grid input,
       .note-remind-grid select,
       .grid input,
@@ -500,9 +516,9 @@
     }
 
     .wrap {
-      max-width: 34rem;
+      max-width: 38rem;
       margin: 0 auto;
-      padding: 1.25rem 1rem 2rem;
+      padding: 1.5rem 1.25rem 2rem;
     }
 
     .top {
@@ -510,19 +526,19 @@
       align-items: center;
       justify-content: space-between;
       gap: 0.75rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .top h1 {
-      font-size: 1.25rem;
-      font-weight: 600;
+      font-size: 1.5rem;
+      font-weight: 700;
       margin: 0;
       letter-spacing: -0.02em;
     }
 
     .tools {
       display: flex;
-      gap: 0.25rem;
+      gap: 0.35rem;
       flex-wrap: wrap;
       justify-content: flex-end;
     }
@@ -531,43 +547,49 @@
       width: 2.25rem;
       height: 2.25rem;
       padding: 0;
-      border: 1px solid var(--border);
-      background: var(--surface);
+      border: none;
+      background: var(--surface-container-high);
       color: var(--muted);
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 0.85rem;
       line-height: 1;
+      transition: background 0.15s, color 0.15s;
     }
 
     .icon-btn:hover {
       color: var(--text);
-      border-color: var(--muted);
+      background: var(--surface-container-highest);
     }
 
     .search {
       width: 100%;
-      padding: 0.55rem 0.65rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
+      padding: 0.6rem 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-container-high);
       color: var(--text);
       font: inherit;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
+      transition: box-shadow 0.15s;
+    }
+
+    .search::placeholder {
+      color: var(--muted);
     }
 
     .search:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.3);
     }
 
     .note-compose textarea {
       width: 100%;
       min-height: 6.5rem;
       padding: 0.65rem 0.75rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       resize: vertical;
@@ -576,7 +598,7 @@
 
     .note-compose textarea:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.3);
     }
 
     .row {
@@ -587,31 +609,44 @@
     }
 
     .btn {
-      padding: 0.5rem 0.85rem;
+      padding: 0.55rem 1rem;
       border: none;
-      border-radius: 6px;
-      background: var(--accent);
-      color: var(--accent-fg);
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-container));
+      color: var(--on-primary);
       font: inherit;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .btn:disabled {
       opacity: 0.4;
       cursor: not-allowed;
+      transform: none;
     }
 
     .btn-ghost {
       background: transparent;
       color: var(--muted);
-      border: 1px solid var(--border);
+      border: 1px solid var(--outline-variant);
       font-size: 0.8rem;
-      padding: 0.35rem 0.55rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.8rem;
+      transition: background 0.15s, color 0.15s;
     }
 
     .btn-ghost:hover {
       color: var(--text);
+      background: var(--surface-container-highest);
     }
 
     .notes-hint {
@@ -624,13 +659,22 @@
       list-style: none;
       margin: 0;
       padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
     }
 
     li.note {
-      padding: 0.85rem 0;
-      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.1rem;
+      background: var(--surface-container-high);
+      border-radius: 10px;
       display: flex;
-      gap: 0.5rem;
+      gap: 0.6rem;
+      transition: background 0.15s;
+    }
+
+    li.note:hover {
+      background: var(--surface-container-highest);
     }
 
     li.note .note-content {
@@ -638,12 +682,8 @@
       min-width: 0;
     }
 
-    li.note:last-child {
-      border-bottom: none;
-    }
-
     li.note.pinned .note-title-line {
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .note-head {
@@ -668,8 +708,8 @@
 
     .note-subline {
       font-size: 0.82rem;
-      color: var(--muted);
-      margin-top: 0.2rem;
+      color: var(--text-secondary);
+      margin-top: 0.25rem;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -687,23 +727,21 @@
 
     details.note-remind {
       margin-bottom: 0.35rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: transparent;
+      border-radius: 8px;
+      background: var(--surface-container-high);
     }
 
     details.note-remind:not([open]) {
-      border-style: dashed;
-      border-color: var(--border);
+      background: transparent;
+      border: 1px dashed var(--outline-variant);
     }
 
     details.note-remind[open] {
-      background: var(--surface);
-      border-style: solid;
+      background: var(--surface-container-high);
     }
 
     details.note-remind > summary {
-      padding: 0.28rem 0.4rem;
+      padding: 0.35rem 0.5rem;
       cursor: pointer;
       font-size: 0.72rem;
       color: var(--muted);
@@ -719,7 +757,7 @@
     }
 
     details.note-remind > summary::before {
-      content: "▸";
+      content: "\25B8";
       font-size: 0.55rem;
       opacity: 0.7;
       width: 0.65rem;
@@ -727,7 +765,7 @@
     }
 
     details.note-remind[open] > summary::before {
-      content: "▾";
+      content: "\25BE";
     }
 
     .note-remind-grid {
@@ -745,82 +783,90 @@
       display: block;
       font-size: 0.58rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--muted);
       margin-bottom: 0.12rem;
+      font-weight: 600;
     }
 
     .note-remind-grid input,
     .note-remind-grid select {
       width: 100%;
-      padding: 0.3rem 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: var(--bg);
+      padding: 0.35rem 0.45rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-size: 0.78rem;
+    }
+
+    .note-remind-grid input:focus,
+    .note-remind-grid select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
     }
 
     .folder-field-label {
       display: block;
       font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--muted);
       margin-bottom: 0.25rem;
+      font-weight: 600;
     }
 
     .note-folder-select {
       width: 100%;
       padding: 0.45rem 0.55rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-size: 0.85rem;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.55rem;
       cursor: pointer;
     }
 
     .note-folder-select:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
     }
 
     .note-compose .note-title-input {
       width: 100%;
-      padding: 0.55rem 0.65rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
+      padding: 0.6rem 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-weight: 600;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.55rem;
     }
 
     .note-compose .note-title-input:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.3);
     }
 
     .note-editor .note-title-input {
       width: 100%;
-      padding: 0.45rem 0.55rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--surface);
+      padding: 0.5rem 0.6rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-weight: 600;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
     }
 
     .note-editor .note-title-input:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.3);
     }
 
     .note-time {
@@ -832,7 +878,7 @@
     .note-actions {
       display: flex;
       gap: 0.25rem;
-      margin-top: 0.35rem;
+      margin-top: 0.4rem;
     }
 
     .note-actions button {
@@ -841,26 +887,28 @@
       color: var(--muted);
       cursor: pointer;
       font-size: 0.75rem;
-      padding: 0.2rem 0.35rem;
-      border-radius: 4px;
+      padding: 0.25rem 0.4rem;
+      border-radius: 6px;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
     }
 
     .note-actions button:hover {
       color: var(--text);
-      background: var(--border);
+      background: var(--surface-container-highest);
     }
 
     .note-editor {
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
     }
 
     .note-editor textarea {
       width: 100%;
       min-height: 8rem;
-      padding: 0.55rem 0.65rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
+      padding: 0.6rem 0.7rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       resize: vertical;
@@ -868,35 +916,36 @@
 
     .note-editor textarea:focus {
       outline: none;
-      border-color: var(--text);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
     }
 
     .empty {
       text-align: center;
       color: var(--muted);
       font-size: 0.9rem;
-      padding: 2rem 0.5rem;
+      padding: 2.5rem 0.5rem;
     }
 
     #importInput {
       display: none;
     }
 
-    /* —— Not renk sistemi —— */
+    /* ── Not renk sistemi ── */
     .color-picker {
       display: flex;
-      gap: 0.35rem;
+      gap: 0.4rem;
       flex-wrap: wrap;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.6rem;
     }
 
     .color-picker-label {
       display: block;
       font-size: 0.65rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--muted);
       margin-bottom: 0.25rem;
+      font-weight: 600;
     }
 
     .color-dot {
@@ -905,7 +954,7 @@
       border-radius: 50%;
       border: 2px solid transparent;
       cursor: pointer;
-      transition: transform 0.1s, border-color 0.1s;
+      transition: transform 0.15s, border-color 0.15s;
       position: relative;
     }
 
@@ -918,7 +967,7 @@
     }
 
     .color-dot.active::after {
-      content: "✓";
+      content: "\2713";
       position: absolute;
       inset: 0;
       display: flex;
@@ -929,7 +978,7 @@
       font-weight: 700;
     }
 
-    .color-dot[data-color=""] { background: var(--border); }
+    .color-dot[data-color=""] { background: var(--surface-container-highest); }
     .color-dot[data-color=""].active::after { color: var(--text); }
     .color-dot[data-color="red"] { background: #ef4444; }
     .color-dot[data-color="orange"] { background: #f97316; }
@@ -941,7 +990,7 @@
 
     .note-color-bar {
       width: 4px;
-      border-radius: 2px;
+      border-radius: 3px;
       flex-shrink: 0;
       align-self: stretch;
     }
@@ -969,7 +1018,7 @@
     .folder-note-dot[data-color="purple"] { background: #a855f7; }
     .folder-note-dot[data-color="pink"] { background: #ec4899; }
 
-    /* —— FAB butonu —— */
+    /* ── FAB butonu ── */
     .fab {
       position: fixed;
       z-index: 100;
@@ -979,12 +1028,12 @@
       height: 3.5rem;
       border-radius: 50%;
       border: none;
-      background: var(--accent);
-      color: var(--accent-fg);
+      background: linear-gradient(135deg, var(--primary), var(--primary-container));
+      color: var(--on-primary);
       font-size: 2rem;
       line-height: 1;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      box-shadow: 0 20px 40px rgba(21, 32, 49, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -993,25 +1042,27 @@
 
     .fab:hover {
       transform: scale(1.08);
-      box-shadow: 0 6px 24px rgba(0,0,0,0.25);
+      box-shadow: 0 24px 48px rgba(21, 32, 49, 0.5);
     }
 
     .fab.open {
       transform: rotate(45deg);
     }
 
-    /* —— Not modal penceresi —— */
+    /* ── Not modal penceresi ── */
     .note-modal-overlay {
       position: fixed;
       z-index: 90;
       inset: 0;
-      background: rgba(0,0,0,0.45);
+      background: rgba(8, 14, 26, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.25s;
     }
 
     .note-modal-overlay.visible {
@@ -1020,16 +1071,15 @@
     }
 
     .note-modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
+      background: var(--surface-container-highest);
+      border-radius: 16px;
       width: min(28rem, calc(100vw - 2rem));
       max-height: calc(100vh - 4rem);
       overflow-y: auto;
-      padding: 1.5rem;
-      box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+      padding: 1.75rem;
+      box-shadow: 0 20px 40px rgba(21, 32, 49, 0.4);
       transform: translateY(1rem);
-      transition: transform 0.2s;
+      transition: transform 0.25s;
     }
 
     .note-modal-overlay.visible .note-modal {
@@ -1040,39 +1090,37 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 1rem;
+      margin-bottom: 1.25rem;
     }
 
     .note-modal-head h2 {
       margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
     }
 
     .note-modal-close {
       width: 2rem;
       height: 2rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: transparent;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-container-high);
       color: var(--muted);
       font-size: 1.1rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
+      transition: background 0.15s, color 0.15s;
     }
 
     .note-modal-close:hover {
       color: var(--text);
-      border-color: var(--muted);
+      background: var(--surface);
     }
 
-    [data-theme="dark"] .note-modal {
-      box-shadow: 0 12px 48px rgba(0,0,0,0.5);
-    }
-
-    /* —— Görev köşesi —— */
+    /* ── Gorev kosesi ── */
     .tasks-dock {
       position: fixed;
       z-index: 50;
@@ -1082,24 +1130,19 @@
       width: min(22rem, calc(100vw - 6rem));
       max-height: min(72vh, 520px);
       margin: 0;
-      border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: 10px 10px 0 0;
-      background: var(--surface);
-      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
-    }
-
-    [data-theme="dark"] .tasks-dock {
-      box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.45);
+      border: none;
+      border-radius: 14px 14px 0 0;
+      background: var(--surface-container-high);
+      box-shadow: 0 -12px 40px rgba(21, 32, 49, 0.35);
     }
 
     .tasks-dock > summary {
       list-style: none;
-      padding: 0.55rem 0.75rem;
+      padding: 0.65rem 0.85rem;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      color: var(--muted);
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -1113,23 +1156,22 @@
 
     .tasks-dock > summary .badge {
       font-size: 0.7rem;
-      font-weight: 500;
-      padding: 0.15rem 0.45rem;
+      font-weight: 600;
+      padding: 0.15rem 0.5rem;
       border-radius: 999px;
-      background: var(--border);
+      background: var(--surface-container-highest);
       color: var(--text);
     }
 
     .tasks-dock > summary .badge.warn {
-      background: rgba(234, 179, 8, 0.2);
+      background: rgba(234, 179, 8, 0.15);
       color: var(--warn);
     }
 
     .dock-body {
       max-height: min(60vh, 440px);
       overflow-y: auto;
-      padding: 0 0.65rem 0.65rem;
-      border-top: 1px solid var(--border);
+      padding: 0 0.75rem 0.75rem;
       font-size: 0.85rem;
     }
 
@@ -1137,35 +1179,39 @@
       margin-top: 0.5rem;
       margin-bottom: 0.45rem;
       font-size: 0.8rem;
-      padding: 0.4rem 0.5rem;
+      padding: 0.45rem 0.55rem;
     }
 
     .dock-body .row input[type="text"] {
       flex: 1;
       min-width: 0;
-      padding: 0.4rem 0.5rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
+      padding: 0.45rem 0.55rem;
+      border: none;
+      border-radius: 8px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-size: 0.85rem;
     }
 
+    .dock-body .row input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
+    }
+
     .dock-body .btn {
-      padding: 0.4rem 0.6rem;
+      padding: 0.45rem 0.65rem;
       font-size: 0.8rem;
     }
 
     details.add-more {
-      margin-bottom: 0.45rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      background: var(--surface-container-highest);
     }
 
     details.add-more > summary {
-      padding: 0.35rem 0.5rem;
+      padding: 0.4rem 0.55rem;
       cursor: pointer;
       font-size: 0.72rem;
       color: var(--muted);
@@ -1179,8 +1225,8 @@
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 0.35rem;
-      padding: 0 0.5rem 0.5rem;
+      gap: 0.4rem;
+      padding: 0 0.55rem 0.55rem;
     }
 
     .grid .full {
@@ -1191,22 +1237,30 @@
       display: block;
       font-size: 0.6rem;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.06em;
       color: var(--muted);
       margin-bottom: 0.15rem;
+      font-weight: 600;
     }
 
     .grid input,
     .grid select,
     .grid textarea {
       width: 100%;
-      padding: 0.3rem 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: var(--surface);
+      padding: 0.35rem 0.45rem;
+      border: none;
+      border-radius: 6px;
+      background: var(--surface-dim);
       color: var(--text);
       font: inherit;
       font-size: 0.78rem;
+    }
+
+    .grid input:focus,
+    .grid select:focus,
+    .grid textarea:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.2);
     }
 
     .grid textarea {
@@ -1217,34 +1271,38 @@
     .bar {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.2rem;
+      gap: 0.25rem;
       align-items: center;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.4rem;
     }
 
     .bar select {
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      background: var(--surface);
+      border: none;
+      border-radius: 6px;
+      background: var(--surface-container-highest);
       color: var(--text);
       font: inherit;
       font-size: 0.68rem;
-      padding: 0.2rem 0.25rem;
+      padding: 0.25rem 0.3rem;
     }
 
     .pill {
-      border: 1px solid var(--border);
-      background: var(--bg);
+      border: none;
+      background: var(--surface-container-highest);
       color: var(--muted);
-      padding: 0.15rem 0.4rem;
+      padding: 0.2rem 0.5rem;
       border-radius: 999px;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      transition: background 0.15s, color 0.15s;
     }
 
     .pill.on {
-      color: var(--text);
-      border-color: var(--text);
+      color: var(--on-primary);
+      background: var(--primary);
+      font-weight: 600;
     }
 
     ul.tasks {
@@ -1256,13 +1314,12 @@
     li.task {
       display: flex;
       align-items: flex-start;
-      gap: 0.3rem;
-      padding: 0.45rem 0;
-      border-bottom: 1px solid var(--border);
+      gap: 0.35rem;
+      padding: 0.55rem 0;
     }
 
-    li.task:last-child {
-      border-bottom: none;
+    li.task + li.task {
+      padding-top: 0.55rem;
     }
 
     li.task.overdue:not(.done) .title {
@@ -1294,7 +1351,7 @@
 
     li.task input[type="checkbox"] {
       margin-top: 0.15rem;
-      accent-color: var(--text);
+      accent-color: var(--primary);
       flex-shrink: 0;
     }
 
@@ -1318,20 +1375,21 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.2rem;
-      margin-top: 0.15rem;
+      margin-top: 0.2rem;
     }
 
     .badge {
       font-size: 0.58rem;
-      padding: 0.05rem 0.25rem;
-      border-radius: 2px;
-      background: var(--border);
+      padding: 0.08rem 0.3rem;
+      border-radius: 4px;
+      background: var(--surface-container-highest);
       color: var(--muted);
+      font-weight: 500;
     }
 
     .badge.p1 {
-      color: #b91c1c;
-      background: rgba(185, 28, 28, 0.12);
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.15);
     }
 
     .meta {
@@ -1341,7 +1399,7 @@
     }
 
     .meta span + span::before {
-      content: " · ";
+      content: " \00B7 ";
     }
 
     .note-preview.tiny {
@@ -1355,7 +1413,7 @@
     .acts {
       display: flex;
       flex-direction: column;
-      gap: 0.05rem;
+      gap: 0.1rem;
       flex-shrink: 0;
     }
 
@@ -1364,22 +1422,23 @@
       background: none;
       color: var(--muted);
       cursor: pointer;
-      padding: 0.05rem 0.2rem;
+      padding: 0.08rem 0.25rem;
       font-size: 0.72rem;
-      border-radius: 3px;
+      border-radius: 4px;
+      font-family: inherit;
+      transition: background 0.15s, color 0.15s;
     }
 
     .acts button:hover {
       color: var(--text);
-      background: var(--border);
+      background: var(--surface-container-highest);
     }
 
     .panel {
-      margin-top: 0.35rem;
-      padding: 0.4rem;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      background: var(--bg);
+      margin-top: 0.4rem;
+      padding: 0.5rem;
+      border-radius: 10px;
+      background: var(--surface-container-highest);
     }
 
     .panel .grid {
@@ -1390,9 +1449,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 0.4rem;
-      padding-top: 0.4rem;
-      border-top: 1px solid var(--border);
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
       font-size: 0.68rem;
       color: var(--muted);
     }
@@ -1400,6 +1458,24 @@
     [data-theme="dark"] input[type="date"]::-webkit-calendar-picker-indicator,
     [data-theme="dark"] input[type="time"]::-webkit-calendar-picker-indicator {
       filter: invert(0.75);
+    }
+
+    /* ── Scrollbar styling ── */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--surface-container-highest);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--muted);
     }
   </style>
 </head>
@@ -1412,7 +1488,7 @@
         <ul id="folderList" style="list-style:none;margin:0;padding:0"></ul>
         <div class="folder-sep">Klasörsüz</div>
         <div id="generalFolderWrap">
-          <button type="button" class="folder-row" data-folder-view="none"><span class="arrow">▸</span> Genel <span class="fc" id="countNone"></span></button>
+          <button type="button" class="folder-row" data-folder-view="none"><span class="arrow">\u25B8</span> Genel <span class="fc" id="countNone"></span></button>
         </div>
       </nav>
       <div class="sidebar-add">
@@ -1425,15 +1501,15 @@
     <div class="top">
       <h1>Notlarım</h1>
       <div class="tools">
-        <button type="button" class="icon-btn" id="themeBtn" title="Tema">◐</button>
-        <button type="button" class="icon-btn" id="notifBtn" title="Bildirim">🔔</button>
-        <button type="button" class="icon-btn" id="exportBtn" title="Dışa aktar">↓</button>
-        <button type="button" class="icon-btn" id="importBtn" title="İçe aktar">↑</button>
+        <button type="button" class="icon-btn" id="themeBtn" title="Tema">\u25D0</button>
+        <button type="button" class="icon-btn" id="notifBtn" title="Bildirim">\uD83D\uDD14</button>
+        <button type="button" class="icon-btn" id="exportBtn" title="Dışa aktar">\u2193</button>
+        <button type="button" class="icon-btn" id="importBtn" title="İçe aktar">\u2191</button>
         <input type="file" id="importInput" accept="application/json,.json" />
       </div>
     </div>
 
-    <input type="search" class="search" id="noteSearch" placeholder="Notlarda ara…" autocomplete="off" />
+    <input type="search" class="search" id="noteSearch" placeholder="Notlarda ara\u2026" autocomplete="off" />
     <ul class="notes" id="noteList"></ul>
     <p id="noteEmpty" class="empty" hidden>Henüz not yok.</p>
   </div>
@@ -1453,7 +1529,7 @@
           <option value="">— Klasörsüz (Genel) —</option>
         </select>
         <input type="text" class="note-title-input" id="noteTitle" placeholder="Başlık" maxlength="200" autocomplete="off" />
-        <textarea id="noteBody" placeholder="Not metni…" maxlength="50000"></textarea>
+        <textarea id="noteBody" placeholder="Not metni\u2026" maxlength="50000"></textarea>
         <span class="color-picker-label">Renk</span>
         <div class="color-picker" id="noteColorPicker">
           <span class="color-dot active" data-color="" title="Renksiz"></span>
@@ -1505,7 +1581,7 @@
       <span class="badge" id="dockBadge">0</span>
     </summary>
     <div class="dock-body">
-      <input type="search" class="search" id="taskSearch" placeholder="Görevde ara…" autocomplete="off" />
+      <input type="search" class="search" id="taskSearch" placeholder="Görevde ara\u2026" autocomplete="off" />
 
       <form id="taskForm">
         <div class="row">
@@ -1513,7 +1589,7 @@
           <button type="submit" class="btn">Ekle</button>
         </div>
         <details class="add-more">
-          <summary>Tarih, hatırlatma, kategori…</summary>
+          <summary>Tarih, hatırlatma, kategori\u2026</summary>
           <div class="grid">
             <div>
               <label for="dueDate">Gün</label>
@@ -1855,7 +1931,7 @@
 
     function notePreview(body) {
       const line = body.trim().split("\n")[0] || "Başlıksız";
-      return line.length > 120 ? line.slice(0, 120) + "…" : line;
+      return line.length > 120 ? line.slice(0, 120) + "\u2026" : line;
     }
 
     function noteListTitle(n) {
@@ -1866,7 +1942,7 @@
       if (!n.title.trim()) return "";
       const line = n.body.trim().replace(/\s+/g, " ");
       if (!line) return "";
-      return line.length > 100 ? line.slice(0, 100) + "…" : line;
+      return line.length > 100 ? line.slice(0, 100) + "\u2026" : line;
     }
 
     function describeNoteReminder(n) {
@@ -2002,10 +2078,7 @@
       ids.splice(ti, 0, draggedId);
       const idSet = new Set(ids);
       const map = Object.fromEntries(notes.map((n) => [n.id, n]));
-      const before = notes.filter((n) => !idSet.has(n.id));
       const reordered = ids.map((id) => map[id]);
-      // Maintain order: other notes first, then reordered folder notes in new order
-      const firstIdx = notes.findIndex((n) => idSet.has(n.id));
       const result = [];
       let ri = 0;
       for (let i = 0; i < notes.length; i++) {
@@ -2059,7 +2132,7 @@
 
         const grip = document.createElement("span");
         grip.className = "folder-note-grip";
-        grip.textContent = "⋮⋮";
+        grip.textContent = "\u22EE\u22EE";
 
         const info = document.createElement("div");
         info.className = "folder-note-info";
@@ -2111,7 +2184,7 @@
 
         const arrow = document.createElement("span");
         arrow.className = "arrow";
-        arrow.textContent = "▸";
+        arrow.textContent = "\u25B8";
 
         const nm = document.createElement("span");
         nm.className = "folder-name";
@@ -2141,7 +2214,7 @@
         renameBtn.type = "button";
         renameBtn.className = "folder-del";
         renameBtn.setAttribute("aria-label", "Yeniden adlandır");
-        renameBtn.textContent = "✎";
+        renameBtn.textContent = "\u270E";
         renameBtn.addEventListener("click", (e) => {
           e.stopPropagation();
           const nn = prompt("Klasör adı", f.name);
@@ -2157,7 +2230,7 @@
         del.type = "button";
         del.className = "folder-del";
         del.setAttribute("aria-label", "Klasörü sil");
-        del.textContent = "×";
+        del.textContent = "\u00D7";
         del.addEventListener("click", (e) => {
           e.stopPropagation();
           if (!confirm(`"${f.name}" silinsin mi? Notlar "Genel"e taşınır.`)) return;
@@ -2176,7 +2249,6 @@
         head.append(row, renameBtn, del);
         li.appendChild(head);
 
-        // Klasör açıksa altında notları göster
         if (isExpanded) {
           renderFolderNotes(li, f.id);
         }
@@ -2184,12 +2256,10 @@
         folderList.appendChild(li);
       }
 
-      // "Tümü" ve "Genel" butonlarına active toggle
       folderNav.querySelectorAll("[data-folder-view]").forEach((btn) => {
         const v = btn.dataset.folderView;
         if (v === "none") {
           btn.classList.toggle("active", expandedFolders.has("__none"));
-          // Update arrow
           const ar = btn.querySelector(".arrow");
           if (ar) ar.style.transform = expandedFolders.has("__none") ? "rotate(90deg)" : "";
         } else {
@@ -2197,7 +2267,6 @@
         }
       });
 
-      // Genel klasör altında notları göster
       if (generalFolderWrap) {
         const oldList = generalFolderWrap.querySelector(".folder-note-list");
         if (oldList) oldList.remove();
@@ -2211,7 +2280,7 @@
 
     function updateThemeMeta() {
       const dark = document.documentElement.getAttribute("data-theme") === "dark";
-      document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#09090b" : "#f4f4f5");
+      document.querySelector('meta[name="theme-color"]').setAttribute("content", dark ? "#080e1a" : "#f0f2f5");
     }
 
     function applyTheme() {
@@ -2228,7 +2297,7 @@
         notes.filter(isNoteOverdue).length;
       const active = tasks.filter((t) => !t.done).length;
       if (od) document.title = `(${od}) Notlarım`;
-      else if (active) document.title = `${active} görev · Notlarım`;
+      else if (active) document.title = `${active} görev \u00B7 Notlarım`;
       else document.title = "Notlarım";
     }
 
@@ -2262,9 +2331,9 @@
         return;
       }
       notifBtn.hidden = false;
-      if (Notification.permission === "granted") notifBtn.textContent = "✓";
-      else if (Notification.permission === "denied") notifBtn.textContent = "✕";
-      else notifBtn.textContent = "🔔";
+      if (Notification.permission === "granted") notifBtn.textContent = "\u2713";
+      else if (Notification.permission === "denied") notifBtn.textContent = "\u2715";
+      else notifBtn.textContent = "\uD83D\uDD14";
       notifBtn.title =
         Notification.permission === "granted"
           ? "Bildirimler açık"
@@ -2295,7 +2364,7 @@
         t,
         fireMs,
         "Hatırlatma",
-        `${t.text}${when ? ` — ${when}${timeBit}` : ""}`,
+        `${t.text}${when ? ` \u2014 ${when}${timeBit}` : ""}`,
         "task-"
       );
     }
@@ -2308,7 +2377,7 @@
         n,
         fireMs,
         "Not hatırlatması",
-        `${line}${when ? ` — ${when}${timeBit}` : ""}`,
+        `${line}${when ? ` \u2014 ${when}${timeBit}` : ""}`,
         "note-"
       );
     }
@@ -2407,7 +2476,7 @@
         if (rParts.length) {
           const rl = document.createElement("div");
           rl.className = "note-remind-line";
-          rl.textContent = "🔔 " + rParts.join(" · ");
+          rl.textContent = "\uD83D\uDD14 " + rParts.join(" \u00B7 ");
           block.appendChild(rl);
         }
         block.addEventListener("click", () => {
@@ -2435,7 +2504,7 @@
         if (getReminderFireMs(n) !== null) {
           const sn15 = document.createElement("button");
           sn15.type = "button";
-          sn15.textContent = "15′";
+          sn15.textContent = "15\u2032";
           sn15.title = "15 dk ertele";
           sn15.addEventListener("click", (e) => {
             e.stopPropagation();
@@ -2630,7 +2699,7 @@
 
         const grip = document.createElement("span");
         grip.className = "grip" + (customSort ? "" : " inactive");
-        grip.textContent = "⋮⋮";
+        grip.textContent = "\u22EE\u22EE";
         grip.draggable = customSort;
         grip.addEventListener("dragstart", (e) => {
           if (!customSort) return;
@@ -2729,7 +2798,7 @@
         if (!t.done) {
           const sn15 = document.createElement("button");
           sn15.type = "button";
-          sn15.textContent = "15′";
+          sn15.textContent = "15\u2032";
           sn15.title = "15 dk ertele";
           sn15.addEventListener("click", () => {
             t.snoozeUntil = Date.now() + 15 * 60 * 1000;
@@ -2751,14 +2820,14 @@
         }
         const editBtn = document.createElement("button");
         editBtn.type = "button";
-        editBtn.textContent = "⋯";
+        editBtn.textContent = "\u22EF";
         editBtn.addEventListener("click", () => {
           editingTaskId = editingTaskId === t.id ? null : t.id;
           renderTasks();
         });
         const del = document.createElement("button");
         del.type = "button";
-        del.textContent = "×";
+        del.textContent = "\u00D7";
         del.addEventListener("click", () => {
           tasks = tasks.filter((x) => x.id !== t.id);
           if (editingTaskId === t.id) editingTaskId = null;
@@ -2953,7 +3022,6 @@
         if (navBtn) {
           const view = navBtn.dataset.folderView;
           if (view === "none") {
-            // Genel klasör — toggle expand
             if (expandedFolders.has("__none")) {
               expandedFolders.delete("__none");
             } else {
