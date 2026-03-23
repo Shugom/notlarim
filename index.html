@@ -80,31 +80,138 @@
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 16rem;
+      width: 15rem;
       flex-shrink: 0;
       background: var(--surface);
-      padding: 1.25rem 0.75rem;
+      padding: 1.5rem 0.85rem 1rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      gap: 0;
+      overflow-y: auto;
     }
 
-    .sidebar-head {
+    .sidebar-brand {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      padding: 0 0.25rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .sidebar-profile {
+      padding: 0 0.25rem;
+      margin-bottom: 1.1rem;
+    }
+
+    .sidebar-profile-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .sidebar-profile-sub {
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .sidebar-new-note {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      width: 100%;
+      padding: 0.6rem 0;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-container));
+      color: var(--on-primary);
+      font: inherit;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-bottom: 1.25rem;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+
+    .sidebar-new-note:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .sidebar-new-note .plus-icon {
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .nav-item {
+      width: 100%;
+      text-align: left;
+      padding: 0.55rem 0.65rem;
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--text-secondary);
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .nav-item:hover {
+      background: var(--surface-container-high);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-item .nav-icon {
+      font-size: 0.95rem;
+      width: 1.2rem;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .nav-item .nav-label {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .nav-item .nav-count {
       font-size: 0.65rem;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    /* Klasor navigasyonu */
+    .sidebar-section-label {
+      font-size: 0.6rem;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.08em;
       color: var(--muted);
-      padding: 0 0.35rem 0.35rem;
+      padding: 0.6rem 0.65rem 0.25rem;
     }
 
     .folder-nav {
-      border-radius: 8px;
-      background: var(--surface-container-low);
-      padding: 0.3rem;
       display: flex;
       flex-direction: column;
-      gap: 0.15rem;
+      gap: 0.1rem;
       flex: 1;
       min-height: 0;
       overflow-y: auto;
@@ -114,71 +221,68 @@
     .folder-row {
       width: 100%;
       text-align: left;
-      padding: 0.5rem 0.55rem;
+      padding: 0.4rem 0.65rem 0.4rem 1.8rem;
       border: none;
       border-radius: 6px;
       background: transparent;
-      color: var(--text);
+      color: var(--text-secondary);
       font: inherit;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
+      font-weight: 500;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 0.35rem;
-      transition: background 0.15s;
+      transition: background 0.15s, color 0.15s;
     }
 
     .folder-row:hover {
       background: var(--surface-container-high);
+      color: var(--text);
     }
 
     .folder-row.active {
-      background: var(--surface-container-high);
+      color: var(--text);
       font-weight: 600;
     }
 
     .folder-row .fc {
-      font-size: 0.68rem;
+      font-size: 0.62rem;
       color: var(--muted);
       font-weight: 500;
     }
 
     .folder-sep {
-      font-size: 0.65rem;
-      color: var(--muted);
-      padding: 0.5rem 0.35rem 0.2rem;
-      margin-top: 0.25rem;
+      display: none;
     }
 
     .sidebar-add {
       display: flex;
       gap: 0.25rem;
-      margin-top: auto;
-      padding-top: 0.5rem;
+      padding: 0.35rem 0.65rem 0.35rem 1.8rem;
     }
 
     .sidebar-add input {
       flex: 1;
       min-width: 0;
-      padding: 0.4rem 0.5rem;
-      border: 1px solid var(--outline-variant);
+      padding: 0.35rem 0.45rem;
+      border: none;
       border-radius: 6px;
-      background: var(--surface-dim);
+      background: var(--surface-container-high);
       color: var(--text);
       font: inherit;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .sidebar-add input:focus {
       outline: none;
-      border-color: rgba(78, 222, 163, 0.4);
-      box-shadow: 0 0 0 4px rgba(78, 222, 163, 0.08);
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
     }
 
     .sidebar-add .btn-ghost {
-      padding: 0.4rem 0.55rem;
-      font-size: 0.72rem;
+      padding: 0.35rem 0.5rem;
+      font-size: 0.7rem;
     }
 
     .folder-item {
@@ -188,7 +292,7 @@
     .folder-item-head {
       display: flex;
       align-items: center;
-      gap: 0.15rem;
+      gap: 0.1rem;
     }
 
     .folder-item-head .folder-row {
@@ -197,8 +301,8 @@
     }
 
     .folder-row .arrow {
-      font-size: 0.55rem;
-      opacity: 0.6;
+      font-size: 0.5rem;
+      opacity: 0.5;
       transition: transform 0.15s;
     }
 
@@ -206,22 +310,40 @@
       transform: rotate(90deg);
     }
 
+    /* Sidebar alt bolum */
+    .sidebar-bottom {
+      margin-top: auto;
+      padding-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .sidebar-bottom .nav-item {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .sidebar-bottom .nav-item:hover {
+      color: var(--text);
+    }
+
     /* ── Klasor alti not listesi ── */
     .folder-note-list {
       width: 100%;
       list-style: none;
       margin: 0;
-      padding: 0.1rem 0 0.15rem 0.6rem;
+      padding: 0.1rem 0 0.15rem 2.4rem;
     }
 
     .folder-note-item {
       display: flex;
       align-items: center;
       gap: 0.25rem;
-      padding: 0.35rem 0.4rem;
+      padding: 0.3rem 0.4rem;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       border-left: 2px solid transparent;
       transition: background 0.15s;
     }
@@ -238,8 +360,8 @@
     .folder-note-grip {
       cursor: grab;
       color: var(--muted);
-      font-size: 0.55rem;
-      opacity: 0.35;
+      font-size: 0.5rem;
+      opacity: 0.3;
       user-select: none;
       flex-shrink: 0;
     }
@@ -259,11 +381,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
       font-weight: 500;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
     }
 
     .folder-note-date {
-      font-size: 0.6rem;
+      font-size: 0.58rem;
       color: var(--muted);
       white-space: nowrap;
     }
@@ -274,16 +396,21 @@
 
     .folder-del {
       flex-shrink: 0;
-      width: 1.5rem;
-      height: 1.5rem;
+      width: 1.4rem;
+      height: 1.4rem;
       border: none;
       border-radius: 6px;
       background: transparent;
       color: var(--muted);
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       line-height: 1;
       transition: background 0.15s, color 0.15s;
+      opacity: 0;
+    }
+
+    .folder-item-head:hover .folder-del {
+      opacity: 1;
     }
 
     .folder-del:hover {
@@ -291,10 +418,62 @@
       background: var(--surface-container-high);
     }
 
+    /* ── Top header bar ── */
+    .top-header {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      padding: 0.85rem 1.5rem;
+      background: transparent;
+    }
+
+    .top-header .search-bar {
+      width: 18rem;
+      padding: 0.55rem 0.85rem 0.55rem 2.2rem;
+      border: none;
+      border-radius: 10px;
+      background: var(--surface-container-high);
+      color: var(--text);
+      font: inherit;
+      font-size: 0.82rem;
+      position: relative;
+    }
+
+    .top-header .search-bar:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(78, 222, 163, 0.25);
+    }
+
+    .top-header .search-bar::placeholder {
+      color: var(--muted);
+    }
+
+    .search-wrapper {
+      position: relative;
+    }
+
+    .search-wrapper .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 0.8rem;
+      pointer-events: none;
+    }
+
     .main-area {
       flex: 1;
       min-width: 0;
       background: var(--bg);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .main-content {
+      flex: 1;
+      overflow-y: auto;
     }
 
     @media (max-width: 640px) {
@@ -310,14 +489,29 @@
 
       .sidebar {
         width: 100%;
-        max-height: none;
         padding: 0.75rem;
-        gap: 0.3rem;
       }
 
-      .sidebar-head {
-        font-size: 0.6rem;
-        padding: 0 0.2rem 0.15rem;
+      .sidebar-brand {
+        font-size: 0.95rem;
+      }
+
+      .sidebar-profile {
+        margin-bottom: 0.75rem;
+      }
+
+      .sidebar-new-note {
+        margin-bottom: 0.75rem;
+        padding: 0.55rem;
+      }
+
+      .sidebar-nav {
+        margin-bottom: 0.35rem;
+      }
+
+      .nav-item {
+        padding: 0.5rem 0.55rem;
+        font-size: 0.85rem;
       }
 
       .folder-nav {
@@ -326,43 +520,55 @@
       }
 
       .folder-row {
-        padding: 0.55rem 0.55rem;
-        font-size: 0.85rem;
+        padding: 0.45rem 0.55rem 0.45rem 1.4rem;
+        font-size: 0.82rem;
       }
 
       .folder-note-list {
-        padding-left: 0.4rem;
+        padding-left: 1.6rem;
       }
 
       .folder-note-item {
-        padding: 0.45rem 0.4rem;
-        font-size: 0.8rem;
+        padding: 0.4rem 0.4rem;
+        font-size: 0.78rem;
       }
 
       .folder-note-title {
-        font-size: 0.8rem;
+        font-size: 0.78rem;
       }
 
       .folder-note-date {
-        font-size: 0.65rem;
+        font-size: 0.62rem;
       }
 
       .sidebar-add {
-        padding-top: 0.35rem;
+        padding: 0.35rem 0.55rem 0.35rem 1.4rem;
       }
 
       .sidebar-add input {
         padding: 0.4rem;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
       }
 
       .sidebar-add .btn-ghost {
         padding: 0.4rem 0.5rem;
-        font-size: 0.8rem;
+        font-size: 0.78rem;
+      }
+
+      .sidebar-bottom {
+        padding-top: 0.5rem;
+      }
+
+      .top-header {
+        padding: 0.6rem 0.85rem;
+      }
+
+      .top-header .search-bar {
+        width: 12rem;
       }
 
       .wrap {
-        padding: 1rem 0.85rem 2rem;
+        padding: 0.5rem 0.85rem 2rem;
       }
 
       .top {
@@ -926,9 +1132,7 @@
       padding: 2.5rem 0.5rem;
     }
 
-    #importInput {
-      display: none;
-    }
+    .sidebar-head { display: none; }
 
     /* ── Not renk sistemi ── */
     .color-picker {
@@ -1481,38 +1685,79 @@
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" aria-label="Klasörler">
-      <div class="sidebar-head">Klasörler</div>
-      <nav class="folder-nav" id="folderNav">
-        <button type="button" class="folder-row" data-folder-view="all">Tümü <span class="fc" id="countAll"></span></button>
-        <ul id="folderList" style="list-style:none;margin:0;padding:0"></ul>
-        <div class="folder-sep">Klasörsüz</div>
-        <div id="generalFolderWrap">
-          <button type="button" class="folder-row" data-folder-view="none"><span class="arrow">\u25B8</span> Genel <span class="fc" id="countNone"></span></button>
-        </div>
+    <aside class="sidebar" aria-label="Navigasyon">
+      <div class="sidebar-brand">Notlarım</div>
+      <div class="sidebar-profile">
+        <div class="sidebar-profile-name" id="profileName">Kişisel Alan</div>
+        <div class="sidebar-profile-sub">Not Defteri</div>
+      </div>
+
+      <button type="button" class="sidebar-new-note" id="sidebarNewNote">
+        <span class="plus-icon">+</span> Yeni Not
+      </button>
+
+      <nav class="sidebar-nav">
+        <button type="button" class="nav-item active" data-folder-view="all" id="navAll">
+          <span class="nav-icon">&#x1F4C4;</span>
+          <span class="nav-label">Tüm Notlar</span>
+          <span class="nav-count" id="countAll"></span>
+        </button>
+        <button type="button" class="nav-item" id="navFavorites" data-folder-view="pinned">
+          <span class="nav-icon">&#x2605;</span>
+          <span class="nav-label">Favoriler</span>
+        </button>
+        <button type="button" class="nav-item" id="navFolders" data-sidebar-toggle="folders">
+          <span class="nav-icon">&#x1F4C1;</span>
+          <span class="nav-label">Klasörler</span>
+        </button>
       </nav>
-      <div class="sidebar-add">
-        <input type="text" id="newFolderName" placeholder="Yeni klasör" maxlength="40" />
-        <button type="button" class="btn-ghost" id="addFolderBtn">Ekle</button>
+
+      <div class="folder-nav" id="folderNav" style="display:none">
+        <ul id="folderList" style="list-style:none;margin:0;padding:0"></ul>
+        <div id="generalFolderWrap">
+          <button type="button" class="folder-row" data-folder-view="none"><span class="arrow">&#x25B8;</span> Genel <span class="fc" id="countNone"></span></button>
+        </div>
+        <div class="sidebar-add">
+          <input type="text" id="newFolderName" placeholder="Yeni klasör" maxlength="40" />
+          <button type="button" class="btn-ghost" id="addFolderBtn">Ekle</button>
+        </div>
+      </div>
+
+      <div class="sidebar-bottom">
+        <button type="button" class="nav-item" id="themeBtn" title="Tema">
+          <span class="nav-icon">&#x25D0;</span>
+          <span class="nav-label">Tema</span>
+        </button>
+        <button type="button" class="nav-item" id="exportBtn" title="Dışa aktar">
+          <span class="nav-icon">&#x2193;</span>
+          <span class="nav-label">Dışa Aktar</span>
+        </button>
+        <button type="button" class="nav-item" id="importBtn" title="İçe aktar">
+          <span class="nav-icon">&#x2191;</span>
+          <span class="nav-label">İçe Aktar</span>
+        </button>
+        <input type="file" id="importInput" accept="application/json,.json" style="display:none" />
       </div>
     </aside>
     <main class="main-area">
+      <div class="top-header">
+        <div class="search-wrapper">
+          <span class="search-icon">&#x1F50D;</span>
+          <input type="search" class="search-bar" id="noteSearch" placeholder="Notlarda ara..." autocomplete="off" />
+        </div>
+        <button type="button" class="icon-btn" id="notifBtn" title="Bildirim">&#x1F514;</button>
+        <button type="button" class="icon-btn" id="helpBtn" title="Yardım">?</button>
+      </div>
+      <div class="main-content">
   <div class="wrap">
     <div class="top">
       <h1>Notlarım</h1>
-      <div class="tools">
-        <button type="button" class="icon-btn" id="themeBtn" title="Tema">\u25D0</button>
-        <button type="button" class="icon-btn" id="notifBtn" title="Bildirim">\uD83D\uDD14</button>
-        <button type="button" class="icon-btn" id="exportBtn" title="Dışa aktar">\u2193</button>
-        <button type="button" class="icon-btn" id="importBtn" title="İçe aktar">\u2191</button>
-        <input type="file" id="importInput" accept="application/json,.json" />
-      </div>
     </div>
 
-    <input type="search" class="search" id="noteSearch" placeholder="Notlarda ara\u2026" autocomplete="off" />
     <ul class="notes" id="noteList"></ul>
     <p id="noteEmpty" class="empty" hidden>Henüz not yok.</p>
   </div>
+      </div>
     </main>
   </div>
 
@@ -1752,7 +1997,12 @@
     const noteSearchEl = $("noteSearch");
     const generalFolderWrap = $("generalFolderWrap");
     const noteColorPicker = $("noteColorPicker");
+    const sidebarNewNote = $("sidebarNewNote");
+    const navAll = $("navAll");
+    const navFavorites = $("navFavorites");
+    const navFolders = $("navFolders");
     let selectedNoteColor = "";
+    let foldersExpanded = false;
 
     function openNoteModal() {
       noteModalOverlay.classList.add("visible");
@@ -2037,6 +2287,7 @@
       const q = noteSearchEl ? noteSearchEl.value.trim().toLowerCase() : "";
       const list = notes.filter((n) => {
         if (selectedFolderView === "all") { /* pass */ }
+        else if (selectedFolderView === "pinned") { if (!n.pinned) return false; }
         else if (selectedFolderView === "none") { if (n.folderId) return false; }
         else { if (n.folderId !== selectedFolderView) return false; }
         if (q) {
@@ -2256,14 +2507,13 @@
         folderList.appendChild(li);
       }
 
+      // Genel klasor toggle
       folderNav.querySelectorAll("[data-folder-view]").forEach((btn) => {
         const v = btn.dataset.folderView;
         if (v === "none") {
           btn.classList.toggle("active", expandedFolders.has("__none"));
           const ar = btn.querySelector(".arrow");
           if (ar) ar.style.transform = expandedFolders.has("__none") ? "rotate(90deg)" : "";
-        } else {
-          btn.classList.toggle("active", selectedFolderView === v);
         }
       });
 
@@ -2274,6 +2524,9 @@
           renderFolderNotes(generalFolderWrap, null);
         }
       }
+
+      // Update sidebar nav active states
+      if (typeof updateSidebarNav === "function") updateSidebarNav();
 
       refreshNoteFolderSelect();
     }
@@ -3016,6 +3269,37 @@
       taskInput.focus();
     });
 
+    // Sidebar navigasyon
+    function updateSidebarNav() {
+      document.querySelectorAll(".sidebar-nav .nav-item").forEach(function(btn) {
+        btn.classList.remove("active");
+      });
+      if (selectedFolderView === "all") navAll.classList.add("active");
+      else if (selectedFolderView === "pinned") navFavorites.classList.add("active");
+    }
+
+    navAll.addEventListener("click", () => {
+      selectedFolderView = "all";
+      updateSidebarNav();
+      renderAll();
+    });
+
+    navFavorites.addEventListener("click", () => {
+      selectedFolderView = "pinned";
+      updateSidebarNav();
+      renderAll();
+    });
+
+    navFolders.addEventListener("click", () => {
+      foldersExpanded = !foldersExpanded;
+      folderNav.style.display = foldersExpanded ? "flex" : "none";
+      navFolders.classList.toggle("active", foldersExpanded);
+    });
+
+    sidebarNewNote.addEventListener("click", () => {
+      openNoteModal();
+    });
+
     if (folderNav) {
       folderNav.addEventListener("click", (e) => {
         const navBtn = e.target.closest("button.folder-row[data-folder-view]");
@@ -3031,6 +3315,7 @@
           } else {
             selectedFolderView = view;
           }
+          updateSidebarNav();
           renderAll();
         }
       });
@@ -3044,6 +3329,10 @@
       newFolderName.value = "";
       selectedFolderView = nf.id;
       expandedFolders.add(nf.id);
+      foldersExpanded = true;
+      folderNav.style.display = "flex";
+      navFolders.classList.add("active");
+      updateSidebarNav();
       persist();
       renderAll();
     });
