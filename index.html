@@ -3533,7 +3533,7 @@
 
       let total = 0;
       for (const item of shoppingItems) {
-        total += parseFloat(item.price) || 0;
+        if (!item.checked) total += parseFloat(item.price) || 0;
       }
       shopTotalEl.textContent = total % 1 === 0 ? String(total) : total.toFixed(2);
 
@@ -3586,7 +3586,7 @@
           persist();
           // Update total live
           let t = 0;
-          for (const si of shoppingItems) t += parseFloat(si.price) || 0;
+          for (const si of shoppingItems) if (!si.checked) t += parseFloat(si.price) || 0;
           shopTotalEl.textContent = t % 1 === 0 ? String(t) : t.toFixed(2);
           const b = parseFloat(shoppingBudget);
           if (b > 0 && t > b) shopTotalEl.classList.add("over-budget");
@@ -4006,7 +4006,7 @@
       shoppingBudget = shopBudgetEl.value;
       persist();
       let t = 0;
-      for (const si of shoppingItems) t += parseFloat(si.price) || 0;
+      for (const si of shoppingItems) if (!si.checked) t += parseFloat(si.price) || 0;
       const b = parseFloat(shoppingBudget);
       if (b > 0 && t > b) shopTotalEl.classList.add("over-budget");
       else shopTotalEl.classList.remove("over-budget");
