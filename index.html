@@ -394,6 +394,13 @@
       border-top: 2px solid var(--primary);
     }
 
+    .folder-row.drop-target {
+      background: var(--primary-container);
+      color: var(--primary);
+      outline: 2px dashed var(--primary);
+      outline-offset: -2px;
+    }
+
     .folder-del {
       flex-shrink: 0;
       width: 1.4rem;
@@ -2363,8 +2370,9 @@
           dragNoteId = n.id;
           e.dataTransfer.effectAllowed = "move";
           e.dataTransfer.setData("text/plain", n.id);
+          li.style.opacity = "0.5";
         });
-        li.addEventListener("dragend", () => { dragNoteId = null; });
+        li.addEventListener("dragend", () => { dragNoteId = null; li.style.opacity = ""; });
         li.addEventListener("dragover", (e) => {
           if (!dragNoteId) return;
           e.preventDefault();
@@ -2458,6 +2466,28 @@
             expandedFolders.add(f.id);
           }
           selectedFolderView = f.id;
+          renderAll();
+        });
+
+        // Drop target: move notes into this folder
+        row.addEventListener("dragover", (e) => {
+          if (!dragNoteId) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          row.classList.add("drop-target");
+        });
+        row.addEventListener("dragleave", () => { row.classList.remove("drop-target"); });
+        row.addEventListener("drop", (e) => {
+          e.preventDefault();
+          row.classList.remove("drop-target");
+          if (!dragNoteId) return;
+          const note = notes.find((n) => n.id === dragNoteId);
+          if (!note || note.folderId === f.id) return;
+          note.folderId = f.id;
+          note.updatedAt = Date.now();
+          persist();
+          dragNoteId = null;
+          expandedFolders.add(f.id);
           renderAll();
         });
 
@@ -2699,6 +2729,17 @@
           "note" +
           (n.pinned ? " pinned" : "") +
           (isNoteOverdue(n) ? " overdue" : "");
+        li.draggable = true;
+        li.addEventListener("dragstart", (e) => {
+          dragNoteId = n.id;
+          e.dataTransfer.effectAllowed = "move";
+          e.dataTransfer.setData("text/plain", n.id);
+          li.style.opacity = "0.5";
+        });
+        li.addEventListener("dragend", () => {
+          dragNoteId = null;
+          li.style.opacity = "";
+        });
 
         if (n.color) {
           const colorBar = document.createElement("div");
@@ -3319,6 +3360,31 @@
           renderAll();
         }
       });
+
+      // "Genel" folder drop target: move notes out of folders
+      const genelBtn = generalFolderWrap.querySelector("button.folder-row[data-folder-view='none']");
+      if (genelBtn) {
+        genelBtn.addEventListener("dragover", (e) => {
+          if (!dragNoteId) return;
+          e.preventDefault();
+          e.dataTransfer.dropEffect = "move";
+          genelBtn.classList.add("drop-target");
+        });
+        genelBtn.addEventListener("dragleave", () => { genelBtn.classList.remove("drop-target"); });
+        genelBtn.addEventListener("drop", (e) => {
+          e.preventDefault();
+          genelBtn.classList.remove("drop-target");
+          if (!dragNoteId) return;
+          const note = notes.find((n) => n.id === dragNoteId);
+          if (!note || !note.folderId) return;
+          note.folderId = null;
+          note.updatedAt = Date.now();
+          persist();
+          dragNoteId = null;
+          expandedFolders.add("__none");
+          renderAll();
+        });
+      }
     }
 
     addFolderBtn.addEventListener("click", () => {
